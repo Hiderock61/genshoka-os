@@ -16,8 +16,8 @@
   --border:     #253050;   /* 旧 #1e2840 → カード輪郭をはっきりさせる */
   --border-dim: #182038;   /* 旧 #151c2e */
 
-  /* ── グリッド線専用：背景に溶け込むレベルまで薄く ── */
-  --grid-line:  #0d1020;   /* 旧 #111525 → かなり薄く */
+  /* ── グリッド線専用：観測装置の床。本文の前に出ない ── */
+  --grid-line:  #0b0e1a;   /* 旧 #0d1020 → さらに薄く */
 
   /* ── アクセント：少しだけ明るく（過剰にしない） ── */
   --accent:     #1affa8;   /* 旧 #00ff9d → 輝度+8程度 */
@@ -97,7 +97,7 @@ body {
   font-family: var(--mono);
   font-size: 12px;
   color: var(--accent);
-  background: rgba(0,255,157,0.06);
+  background: rgba(26,255,168,0.06);
   flex-shrink: 0;
   letter-spacing: 0;
 }
@@ -116,9 +116,9 @@ body {
 }
 
 .header-sub {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-dim);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   margin-top: 2px;
   font-family: var(--mono);
 }
@@ -129,8 +129,8 @@ body {
   gap: 8px 16px;
   align-items: center;
   padding: 8px 10px;
-  background: rgba(79,195,247,0.04);
-  border: 1px solid rgba(79,195,247,0.12);
+  background: rgba(98,204,250,0.04);
+  border: 1px solid rgba(98,204,250,0.13);
   border-radius: var(--radius-sm);
 }
 
@@ -184,8 +184,8 @@ body {
   font-family: var(--mono);
   font-size: 12px;
   color: var(--accent);
-  background: rgba(0,255,157,0.07);
-  border: 1px solid rgba(0,255,157,0.15);
+  background: rgba(26,255,168,0.07);
+  border: 1px solid rgba(26,255,168,0.16);
   border-radius: 3px;
   padding: 1px 5px;
   white-space: nowrap;
@@ -200,7 +200,7 @@ body {
 .input-label {
   display: block;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--accent);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -234,7 +234,7 @@ body {
 
 .word-input:focus {
   border-color: var(--accent-dim);
-  box-shadow: 0 0 0 2px rgba(0,255,157,0.1);
+  box-shadow: 0 0 0 2px rgba(26,255,168,0.1);
 }
 
 .observe-btn {
@@ -242,7 +242,7 @@ body {
   align-items: center;
   gap: 6px;
   padding: 10px 16px;
-  background: rgba(0,255,157,0.1);
+  background: rgba(26,255,168,0.1);
   border: 1px solid var(--accent-dim);
   border-radius: var(--radius-sm);
   color: var(--accent);
@@ -256,12 +256,12 @@ body {
 }
 
 .observe-btn:hover {
-  background: rgba(0,255,157,0.18);
-  box-shadow: 0 0 12px rgba(0,255,157,0.15);
+  background: rgba(26,255,168,0.18);
+  box-shadow: 0 0 12px rgba(26,255,168,0.15);
 }
 
 .observe-btn:active {
-  background: rgba(0,255,157,0.25);
+  background: rgba(26,255,168,0.25);
 }
 
 .btn-icon {
@@ -298,7 +298,7 @@ body {
 .chip:hover {
   border-color: var(--accent-dim);
   color: var(--accent);
-  background: rgba(0,255,157,0.06);
+  background: rgba(26,255,168,0.06);
 }
 
 /* ─── 結果エリア ─────────────────────────────────── */
@@ -372,7 +372,7 @@ body {
 
 .result-phenomenon-name {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--amber);
   letter-spacing: 0.04em;
   margin-bottom: 10px;
@@ -579,7 +579,7 @@ body {
   background: transparent;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  color: #7a8ea8;
+  color: var(--text-dim);
   font-family: var(--mono);
   font-size: 12px;
   cursor: pointer;
@@ -601,7 +601,7 @@ body {
   margin-top: 16px;
   font-family: var(--mono);
   font-size: 12px;
-  color: #7a8ea8;
+  color: var(--text-dim);
   text-align: center;
   letter-spacing: 0.04em;
 }
@@ -619,13 +619,13 @@ body {
 .not-found-icon {
   font-size: 28px;
   margin-bottom: 12px;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .not-found-title {
   font-family: var(--mono);
   font-size: 14px;
-  color: #8a9ab8;
+  color: var(--text-dim);
   margin-bottom: 8px;
 }
 
@@ -644,7 +644,7 @@ body {
 
 .footer-note {
   font-size: 12px;
-  color: #6a7a96;
+  color: #7a8aa4;
   line-height: 1.75;
   margin-bottom: 6px;
 }
@@ -652,7 +652,7 @@ body {
 .footer-sig {
   font-family: var(--mono);
   font-size: 11px;
-  color: #525f78;
+  color: #5e6e88;
   letter-spacing: 0.06em;
 }
 
