@@ -12,6 +12,8 @@
   --bg-hover:   #1a2035;
   --border:     #1e2840;
   --border-dim: #151c2e;
+  /* グリッド線専用：border-dimより薄く */
+  --grid-line:  #111525;
 
   --accent:     #00ff9d;
   --accent-dim: #00c97a;
@@ -21,7 +23,8 @@
   --red-lo:     #ff6b6b;
 
   --text:       #c8d4e8;
-  --text-dim:   #6a7a96;
+  /* 旧 #6a7a96 → 読める明るさへ */
+  --text-dim:   #8a9ab8;
   --text-bright:#e8f0ff;
 
   --mono: "SF Mono", "Fira Code", "Consolas", "Courier New", monospace;
@@ -47,10 +50,10 @@ body {
   margin: 0 auto;
   padding: 0 0 80px;
   background: var(--bg);
-  /* subtle grid overlay */
+  /* グリッド線を専用トークンで薄く */
   background-image:
-    linear-gradient(var(--border-dim) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 32px 32px;
   background-attachment: fixed;
 }
@@ -134,7 +137,7 @@ body {
 }
 
 .formula-dim {
-  color: var(--text-dim);
+  color: #8a9ab8;
 }
 
 .formula-sep {
@@ -142,7 +145,7 @@ body {
 }
 
 .formula-simple {
-  color: rgba(79,195,247,0.55);
+  color: rgba(79,195,247,0.8);
 }
 
 /* ─── メイン ─────────────────────────────────── */
@@ -157,9 +160,9 @@ body {
 }
 
 .intro-text {
-  font-size: 13px;
-  color: var(--text-dim);
-  line-height: 1.8;
+  font-size: 14px;
+  color: #a0b0cc;
+  line-height: 1.85;
   margin-bottom: 10px;
 }
 
@@ -168,8 +171,8 @@ body {
 }
 
 .intro-text--dim {
-  font-size: 12px;
-  color: #4a5a72;
+  font-size: 13px;
+  color: #7a8ea8;
 }
 
 .layer-inline {
@@ -278,10 +281,10 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 20px;
-  color: var(--text);
+  color: #b0c0d8;
   font-family: var(--sans);
-  font-size: 12px;
-  padding: 5px 11px;
+  font-size: 13px;
+  padding: 6px 13px;
   cursor: pointer;
   transition: border-color 0.12s, color 0.12s, background 0.12s;
   -webkit-appearance: none;
@@ -371,9 +374,9 @@ body {
 }
 
 .result-definition {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text);
-  line-height: 1.75;
+  line-height: 1.85;
   padding: 10px 14px;
   background: rgba(255,179,0,0.05);
   border-left: 2px solid var(--amber-dim);
@@ -395,8 +398,8 @@ body {
 
 .primitives-label {
   font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
+  font-size: 11px;
+  color: #7a8ea8;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   width: 100%;
@@ -405,7 +408,7 @@ body {
 
 .prim-tag {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--blue-hi);
   background: rgba(79,195,247,0.08);
   border: 1px solid rgba(79,195,247,0.2);
@@ -451,16 +454,16 @@ body {
 .layer-key-label {
   font-size: 9px;
   font-family: var(--mono);
-  opacity: 0.55;
+  opacity: 0.75;
   letter-spacing: 0.06em;
   vertical-align: super;
   margin-left: 2px;
 }
 
 .layer-val {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text);
-  line-height: 1.65;
+  line-height: 1.75;
 }
 
 /* ΔI ブロック */
@@ -474,8 +477,8 @@ body {
 
 .delta-label {
   font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
+  font-size: 11px;
+  color: #7a8ea8;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 6px;
@@ -498,8 +501,8 @@ body {
 
 .scale-label {
   font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
+  font-size: 11px;
+  color: #7a8ea8;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -509,15 +512,15 @@ body {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
 }
 
 .scale-list li {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text);
-  padding-left: 14px;
+  padding-left: 16px;
   position: relative;
-  line-height: 1.55;
+  line-height: 1.65;
 }
 
 .scale-list li::before {
@@ -539,17 +542,17 @@ body {
 
 .hyp-label {
   font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
+  font-size: 11px;
+  color: #7a8ea8;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 6px;
 }
 
 .hyp-val {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text);
-  line-height: 1.75;
+  line-height: 1.85;
   padding: 8px 12px;
   background: rgba(0,255,157,0.04);
   border: 1px solid rgba(0,255,157,0.1);
@@ -571,7 +574,7 @@ body {
   background: transparent;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  color: var(--text-dim);
+  color: #7a8ea8;
   font-family: var(--mono);
   font-size: 12px;
   cursor: pointer;
@@ -593,10 +596,9 @@ body {
   margin-top: 16px;
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--text-dim);
+  color: #6a7a96;
   text-align: center;
   letter-spacing: 0.04em;
-  opacity: 0.7;
 }
 
 /* 未登録メッセージ */
@@ -618,13 +620,13 @@ body {
 .not-found-title {
   font-family: var(--mono);
   font-size: 14px;
-  color: var(--text-dim);
+  color: #8a9ab8;
   margin-bottom: 8px;
 }
 
 .not-found-sub {
-  font-size: 12px;
-  color: #3a4a62;
+  font-size: 13px;
+  color: #6a7a96;
 }
 
 /* ─── フッター ─────────────────────────────────── */
@@ -637,7 +639,7 @@ body {
 
 .footer-note {
   font-size: 11px;
-  color: #3a4a62;
+  color: #5a6a84;
   line-height: 1.7;
   margin-bottom: 6px;
 }
@@ -645,7 +647,7 @@ body {
 .footer-sig {
   font-family: var(--mono);
   font-size: 10px;
-  color: #2a3448;
+  color: #44546c;
   letter-spacing: 0.06em;
 }
 
