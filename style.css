@@ -1,24 +1,24 @@
 /* ─────────────────────────────────────────
    現象化OS Core β v0.2.1 — style.css
-   可読性パッチ
+   可読性パッチ（微調整版）
 
    パレット（ダークテーマ）
-     --bg:        #0A0C0A   ページ背景（深いダーク）
-     --surface:   #101410   カード面
-     --surface-hi:#161B16   少し浮いたカード面
-     --border:    #1E2A1E   枠線
-     --border-hi: #2A3A2A   強調枠線
-     --green:     #3DDB82   観測グリーン（v0.2より少しだけ明るく）
-     --green-dim: #2AA65E   緑補助
-     --text:      #D4E8D4   本文（ペールグリーン寄り白、可読性重視）
-     --text-sub:  #8CB89C   補足文（読めるグレー緑系）
-     --text-dim:  #4D6B55   dim文（最低限読める）
-     --muted:     #3A5240   最弱ラベル
-     --white:     #EEF4EE   カテゴリヘッダ白文字
-     --accent:    #3DDB82   アクセント（観測グリーン）
+     --bg:        #080A09   ページ背景（深紺黒を維持）
+     --surface:   #0D110D   カード面（元のカード感を維持）
+     --surface-hi:#121812   少し浮いたカード面
+     --border:    #1C271C   枠線
+     --border-hi: #243224   強調枠線（少し見やすく）
+     --green:     #34C472   観測グリーン（今より少しだけ明るく）
+     --green-dim: #249955   緑補助
+     --text:      #B8CEB8   本文（淡いグレー緑系、読みやすく）
+     --text-sub:  #6E9478   補足文（今より少し明るく）
+     --text-dim:  #3D5A44   dim文（最低限読める）
+     --muted:     #2C4233   最弱ラベル
+     --white:     #D8E8D8   カテゴリヘッダ白文字
+     --accent:    #34C472   アクセント（観測グリーン）
      --warn:      #E84040
-     --ok:        #3DDB82
-     --grid:      rgba(61,219,130,0.045)  グリッド線（かなり薄く）
+     --ok:        #34C472
+     --grid:      rgba(40,120,70,0.035)   グリッド線（かなり薄く）
    ───────────────────────────────────────── */
 
 *, *::before, *::after {
@@ -28,22 +28,22 @@
 }
 
 :root {
-  --bg:        #0A0C0A;
-  --surface:   #101410;
-  --surface-hi:#161B16;
-  --border:    #1E2A1E;
-  --border-hi: #2A3A2A;
-  --green:     #3DDB82;
-  --green-dim: #2AA65E;
-  --text:      #D4E8D4;
-  --text-sub:  #8CB89C;
-  --text-dim:  #4D6B55;
-  --muted:     #3A5240;
-  --white:     #EEF4EE;
-  --accent:    #3DDB82;
-  --accent2:   #2AA65E;
+  --bg:        #080A09;
+  --surface:   #0D110D;
+  --surface-hi:#121812;
+  --border:    #1C271C;
+  --border-hi: #243224;
+  --green:     #34C472;
+  --green-dim: #249955;
+  --text:      #B8CEB8;
+  --text-sub:  #6E9478;
+  --text-dim:  #3D5A44;
+  --muted:     #2C4233;
+  --white:     #D8E8D8;
+  --accent:    #34C472;
+  --accent2:   #249955;
   --warn:      #E84040;
-  --ok:        #3DDB82;
+  --ok:        #34C472;
   --radius:    10px;
   --radius-sm: 7px;
   --font-mono: 'Courier New', Courier, monospace;
@@ -51,7 +51,7 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 15px;             /* ベースを15pxに調整 */
   -webkit-text-size-adjust: 100%;
 }
 
@@ -63,14 +63,15 @@ html {
 body {
   background-color: var(--bg);
   background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 32px 32px;
+    linear-gradient(rgba(40,120,70,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(40,120,70,0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
   color: var(--text);
   font-family: var(--font-sans);
   min-height: 100dvh;
   padding-bottom: 5rem;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;          /* 横はみ出し防止 */
 }
 
 /* ── HEADER ─────────────────────────────── */
@@ -135,6 +136,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
+  overflow-x: hidden;        /* 横はみ出し防止 */
+  min-width: 0;
 }
 
 /* ── INTRO CARD ──────────────────────────── */
@@ -147,9 +150,9 @@ body {
 }
 
 .intro-text {
-  font-size: 0.88rem;      /* 15px相当 */
-  line-height: 1.75;
-  color: var(--text-sub);  /* 補足文：読めるグレー緑系 */
+  font-size: 0.9rem;       /* ≈13.5px（15px base） */
+  line-height: 1.72;
+  color: var(--text-sub);
 }
 
 /* ── CARD (shared) ───────────────────────── */
@@ -177,7 +180,7 @@ body {
   outline: none;
   resize: none;
   font-family: var(--font-sans);
-  font-size: 0.97rem;       /* 入力欄：視認性 */
+  font-size: 0.93rem;       /* ≈14px */
   color: var(--text);
   background: transparent;
   line-height: 1.65;
@@ -197,22 +200,24 @@ body {
 
 .input-row {
   display: flex;
-  gap: 0.6rem;
+  gap: 0.55rem;
   align-items: stretch;
+  min-width: 0;              /* 横はみ出し防止 */
 }
 
 .main-input {
   flex: 1;
   border: 1px solid var(--border-hi);
   border-radius: var(--radius-sm);
-  padding: 0.72rem 0.9rem;
+  padding: 0.7rem 0.85rem;
   font-family: var(--font-sans);
-  font-size: 0.97rem;
+  font-size: 0.93rem;       /* ≈14px */
   color: var(--text);
   background: var(--surface-hi);
   outline: none;
   -webkit-appearance: none;
   caret-color: var(--green);
+  min-width: 0;             /* flex内での横はみ出し防止 */
 }
 
 .main-input:focus {
@@ -222,8 +227,8 @@ body {
 }
 
 .main-input::placeholder {
-  color: var(--text-dim);   /* プレースホルダー：見える */
-  font-size: 0.87rem;
+  color: var(--text-dim);
+  font-size: 0.86rem;       /* ≈12.9px */
   opacity: 1;
 }
 
@@ -249,10 +254,10 @@ body {
   background: var(--surface-hi);
   border: 1px solid var(--border-hi);
   border-radius: 99px;
-  padding: 0.48rem 0.9rem;
+  padding: 0.44rem 0.85rem;
   font-family: var(--font-sans);
-  font-size: 0.83rem;
-  color: var(--text-sub);   /* チップ文字：明るく読める */
+  font-size: 0.8rem;        /* ≈12px */
+  color: var(--text-sub);
   cursor: pointer;
   white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
@@ -275,9 +280,9 @@ body {
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-family: var(--font-sans);
-  font-size: 0.92rem;
+  font-size: 0.87rem;       /* ≈13px */
   font-weight: 700;
-  padding: 0.75rem 1.1rem;
+  padding: 0.72rem 1rem;
   transition: opacity 0.12s, transform 0.1s;
   -webkit-tap-highlight-color: transparent;
   white-space: nowrap;
@@ -436,9 +441,9 @@ body {
 }
 
 .v2-layer-body {
-  font-size: 0.88rem;        /* IMSFETカード本文：読みやすく */
-  color: var(--text);        /* 本文色：明るく */
-  line-height: 1.7;          /* 行間を広げる */
+  font-size: 0.86rem;        /* ≈12.9px（層カード本文） */
+  color: var(--text);
+  line-height: 1.68;
 }
 
 /* ΔI block */
@@ -478,9 +483,9 @@ body {
 }
 
 .v2-delta-body {
-  font-size: 0.88rem;
-  color: var(--text);       /* 結果カード本文：明るく */
-  line-height: 1.7;
+  font-size: 0.86rem;       /* ≈12.9px */
+  color: var(--text);
+  line-height: 1.68;
 }
 
 .v2-delta-arrow {
@@ -511,7 +516,7 @@ body {
 }
 
 .v2-delta-eq-body {
-  font-size: 0.92rem;
+  font-size: 0.87rem;       /* ≈13px */
   font-weight: 700;
   color: var(--text);
   line-height: 1.55;
@@ -539,7 +544,7 @@ body {
 }
 
 .v2-next-body {
-  font-size: 0.97rem;
+  font-size: 0.9rem;        /* ≈13.5px */
   font-weight: 700;
   color: var(--text);
   line-height: 1.6;
@@ -743,9 +748,9 @@ body {
 }
 
 .result-body {
-  font-size: 0.93rem;        /* 結果カード本文：読みやすく */
-  line-height: 1.75;         /* 行間を広げる */
-  color: var(--text);        /* 本文色：明るく */
+  font-size: 0.88rem;        /* ≈13.2px（v0.1結果本文） */
+  line-height: 1.72;
+  color: var(--text);
   white-space: pre-wrap;
 }
 
@@ -798,8 +803,8 @@ body {
 }
 
 .result-axiom {
-  font-size: 0.72rem;
-  color: var(--text-sub);    /* フッター：最低限読める */
+  font-size: 0.71rem;        /* ≈10.7px、フッターは小さめ維持 */
+  color: var(--text-sub);    /* 今より少し明るく読める */
   font-family: var(--font-mono);
   line-height: 1.7;
   letter-spacing: 0.03em;
