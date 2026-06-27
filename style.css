@@ -1,0 +1,379 @@
+/* ─────────────────────────────────────────
+   現象化OS v0.1 — style.css
+   Palette:
+     --ink:    #111111   (primary text)
+     --sub:    #555555   (secondary text)
+     --border: #D8D8D8   (card borders)
+     --bg:     #F7F6F3   (page background, warm off-white)
+     --white:  #FFFFFF   (card surfaces)
+     --accent: #2C5BFF   (layer tags, primary button)
+     --warn:   #E84040   (missing / low gauge)
+     --ok:     #1DB87A   (high gauge)
+   ───────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --ink:    #111111;
+  --sub:    #555555;
+  --border: #D8D8D8;
+  --bg:     #F7F6F3;
+  --white:  #FFFFFF;
+  --accent: #2C5BFF;
+  --warn:   #E84040;
+  --ok:     #1DB87A;
+  --radius: 12px;
+  --font-mono: 'Courier New', Courier, monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  min-height: 100dvh;
+  padding-bottom: 4rem;
+}
+
+/* ── HEADER ─────────────────────────────── */
+
+.site-header {
+  background: var(--ink);
+  color: var(--white);
+  padding: 1.25rem 1.25rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.os-label {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.os-version {
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: #888;
+  font-weight: 400;
+}
+
+.header-formula {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #888;
+  letter-spacing: 0.04em;
+}
+
+/* ── MAIN LAYOUT ─────────────────────────── */
+
+.main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ── CARD ────────────────────────────────── */
+
+.card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+}
+
+.card-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--sub);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.card-textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: var(--font-sans);
+  font-size: 0.97rem;
+  color: var(--ink);
+  background: transparent;
+  line-height: 1.6;
+  caret-color: var(--accent);
+}
+
+.card-textarea::placeholder {
+  color: #BBBBBB;
+}
+
+/* ── LAYER GRID ──────────────────────────── */
+
+.layer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.layer-card {
+  position: relative;
+  padding-top: 1.4rem;
+}
+
+.layer-tag {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  background: var(--accent);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius) 0 var(--radius) 0;
+  letter-spacing: 0;
+}
+
+/* ── DELTA CARD ──────────────────────────── */
+
+.delta-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.delta-col {
+  flex: 1;
+}
+
+.delta-arrow {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  padding-top: 1.6rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── ACTION ROW ──────────────────────────── */
+
+.action-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.85rem 1.25rem;
+  transition: opacity 0.15s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+  transform: scale(0.97);
+  opacity: 0.85;
+}
+
+.btn--primary {
+  background: var(--ink);
+  color: var(--white);
+  flex: 1;
+  letter-spacing: 0.03em;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--sub);
+  border: 1.5px solid var(--border);
+  padding: 0.85rem 1rem;
+}
+
+.btn--copy {
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+  font-size: 0.82rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* ── RESULT SECTION ──────────────────────── */
+
+.result-section {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.result-section.hidden {
+  display: none;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.result-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--sub);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.result-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.result-block {
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.result-block:last-child {
+  border-bottom: none;
+}
+
+.result-block--next {
+  background: #F0F3FF;
+}
+
+.result-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--sub);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-mono);
+}
+
+.result-body {
+  font-size: 0.93rem;
+  line-height: 1.7;
+  color: var(--ink);
+  white-space: pre-wrap;
+}
+
+/* ── GAUGE ───────────────────────────────── */
+
+.gauge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.gauge-bar {
+  flex: 1;
+  height: 8px;
+  background: #EBEBEB;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.gauge-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.5s ease, background 0.4s;
+  width: 0%;
+}
+
+.gauge-text {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+  min-width: 2.8rem;
+  text-align: right;
+}
+
+.missing-layers {
+  font-size: 0.82rem;
+  color: var(--warn);
+  font-family: var(--font-mono);
+  min-height: 1.2em;
+}
+
+/* ── RESULT FOOTER ───────────────────────── */
+
+.result-footer {
+  padding: 1rem 1.1rem;
+  background: var(--ink);
+  border-top: 1.5px solid var(--border);
+}
+
+.result-axiom {
+  font-size: 0.82rem;
+  color: #999;
+  font-family: var(--font-mono);
+  line-height: 1.6;
+  letter-spacing: 0.03em;
+}
+
+/* ── RESPONSIVE ──────────────────────────── */
+
+@media (max-width: 400px) {
+  .layer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .delta-row {
+    flex-direction: column;
+  }
+
+  .delta-arrow {
+    padding-top: 0;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gauge-fill {
+    transition: none;
+  }
+  .btn {
+    transition: none;
+  }
+}

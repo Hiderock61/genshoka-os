@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>現象化OS v0.1</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <span class="os-label">現象化OS</span>
+      <span class="os-version">v0.1</span>
+    </div>
+    <p class="header-formula">W = ΔI(M, S) / ΔT under F, E</p>
+  </header>
+
+  <main class="main">
+
+    <section class="card card--target">
+      <label class="card-label" for="target">今、現象にしたいものは？</label>
+      <textarea id="target" class="card-textarea" placeholder="例：この考えを人に伝える　/ プロジェクトを動かす　/ 関係を変える" rows="2"></textarea>
+    </section>
+
+    <div class="layer-grid">
+
+      <section class="card layer-card" data-layer="I">
+        <div class="layer-tag">I</div>
+        <label class="card-label" for="layer-I">情報：何の情報がある？</label>
+        <textarea id="layer-I" class="card-textarea" placeholder="例：過去の記録、感情、データ、知識" rows="2"></textarea>
+      </section>
+
+      <section class="card layer-card" data-layer="M">
+        <div class="layer-tag">M</div>
+        <label class="card-label" for="layer-M">媒体：その情報は何に乗る？</label>
+        <textarea id="layer-M" class="card-textarea" placeholder="例：言葉、身体、紙、画面、空間" rows="2"></textarea>
+      </section>
+
+      <section class="card layer-card" data-layer="S">
+        <div class="layer-tag">S</div>
+        <label class="card-label" for="layer-S">構造：どう並ぶと意味になる？</label>
+        <textarea id="layer-S" class="card-textarea" placeholder="例：時系列、対比、階層、ループ" rows="2"></textarea>
+      </section>
+
+      <section class="card layer-card" data-layer="F">
+        <div class="layer-tag">F</div>
+        <label class="card-label" for="layer-F">力：何が動かす？何を押す？何が重い？</label>
+        <textarea id="layer-F" class="card-textarea" placeholder="例：締め切り、欲求、恐れ、関係性" rows="2"></textarea>
+      </section>
+
+      <section class="card layer-card" data-layer="E">
+        <div class="layer-tag">E</div>
+        <label class="card-label" for="layer-E">エネルギー：動かす余力はある？</label>
+        <textarea id="layer-E" class="card-textarea" placeholder="例：時間的余裕、体力、集中力、リソース" rows="2"></textarea>
+      </section>
+
+      <section class="card layer-card" data-layer="T">
+        <div class="layer-tag">T</div>
+        <label class="card-label" for="layer-T">時間：いつ変化する？</label>
+        <textarea id="layer-T" class="card-textarea" placeholder="例：今日、3ヶ月後、継続的に、締め切り前" rows="2"></textarea>
+      </section>
+
+    </div>
+
+    <section class="card card--delta">
+      <div class="delta-row">
+        <div class="delta-col">
+          <label class="card-label" for="before">Before：変化前の状態は？</label>
+          <textarea id="before" class="card-textarea" placeholder="例：誰も知らない　/ 動いていない" rows="3"></textarea>
+        </div>
+        <div class="delta-arrow">ΔI</div>
+        <div class="delta-col">
+          <label class="card-label" for="after">After：変化後にどうなってほしい？</label>
+          <textarea id="after" class="card-textarea" placeholder="例：伝わっている　/ プロジェクトが動いている" rows="3"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <div class="action-row">
+      <button id="btn-analyze" class="btn btn--primary">現象化を見る</button>
+      <button id="btn-reset" class="btn btn--ghost">リセット</button>
+    </div>
+
+    <section id="result-section" class="result-section hidden">
+
+      <div class="result-header">
+        <h2 class="result-title">分析結果</h2>
+        <button id="btn-copy" class="btn btn--copy">コピー</button>
+      </div>
+
+      <div class="result-card">
+        <div class="result-block">
+          <h3 class="result-label">現象化度</h3>
+          <div class="gauge-wrap">
+            <div class="gauge-bar">
+              <div id="gauge-fill" class="gauge-fill"></div>
+            </div>
+            <span id="gauge-text" class="gauge-text">0 / 6</span>
+          </div>
+          <p id="missing-layers" class="missing-layers"></p>
+        </div>
+
+        <div class="result-block">
+          <h3 class="result-label">現在の状態</h3>
+          <p id="current-state" class="result-body"></p>
+        </div>
+
+        <div class="result-block">
+          <h3 class="result-label">ΔI の読み</h3>
+          <p id="delta-read" class="result-body"></p>
+        </div>
+
+        <div class="result-block">
+          <h3 class="result-label">現象化の読み</h3>
+          <p id="phenomenon-read" class="result-body"></p>
+        </div>
+
+        <div class="result-block result-block--next">
+          <h3 class="result-label">次の一手</h3>
+          <p id="next-step" class="result-body"></p>
+        </div>
+
+        <div class="result-footer">
+          <p class="result-axiom">情報は、媒体・構造・力・エネルギー・時間を通って現象になる。</p>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
