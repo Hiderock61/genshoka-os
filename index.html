@@ -1,227 +1,84 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>現象化OS v0.2</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>現象化OS Core β</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ── HEADER ── -->
-  <header class="site-header">
-    <div class="header-top">
-      <div class="header-title-row">
-        <span class="os-label">現象化OS</span>
-        <span class="os-version">v0.2</span>
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-badge">β</div>
+      <div class="header-text">
+        <h1 class="header-title">現象化OS <span class="accent">Core</span></h1>
+        <p class="header-sub">日常語を、万象のしくみに戻す</p>
       </div>
-      <p class="header-sub">日常行動を6つのレイヤーに翻訳する</p>
     </div>
-    <p class="header-formula">W = ΔI(M, S) / ΔT under F, E</p>
+    <div class="formula-block">
+      <span class="formula-eq">W = ΔI(M, S) / ΔT <span class="formula-dim">under F, E</span></span>
+      <span class="formula-sep">｜</span>
+      <span class="formula-eq formula-simple">W = I × M × S × F × E × T</span>
+    </div>
   </header>
 
   <main class="main">
 
-    <!-- ── INTRO ── -->
-    <section class="intro-card">
-      <p class="intro-text">現象化OSは、日常行動を6つのレイヤーに翻訳する辞書です。行動は、情報だけでは現象になりません。媒体・構造・力・エネルギー・時間がそろうことで、世界の中で動き出します。</p>
+    <section class="intro-section">
+      <p class="intro-text">
+        現象化OS Core は、日常語や自然現象を<br>
+        <span class="layer-inline">I 情報</span> / <span class="layer-inline">M 媒体</span> / <span class="layer-inline">S 構造</span> / <span class="layer-inline">F 力</span> / <span class="layer-inline">E エネルギー</span> / <span class="layer-inline">T 時間</span><br>
+        の6つのレイヤーで観測する仮説実験アプリです。
+      </p>
+      <p class="intro-text intro-text--dim">
+        「食べる」「怒る」「燃える」などの言葉を、人間中心の意味から一度はなして、<br>
+        その裏でどんな差分・境界・変換・流れが起きているのかを見ます。
+      </p>
     </section>
 
-    <!-- ── v0.2 MAIN INPUT ── -->
-    <section class="card card--main-input">
-      <label class="card-label" for="v2-input">今、現象にしたいことは？</label>
+    <section class="input-section">
+      <label class="input-label" for="wordInput">現象として見たい言葉は？</label>
       <div class="input-row">
         <input
-          id="v2-input"
-          class="main-input"
           type="text"
-          placeholder="朝ご飯食べる / 寝る / 部屋を片付ける / アプリ作る"
+          id="wordInput"
+          class="word-input"
+          placeholder="食べる / 寝る / 怒る / 燃える / 伝わる"
           autocomplete="off"
-          autocorrect="off"
           spellcheck="false"
-        />
-        <button id="btn-v2-analyze" class="btn btn--primary">現象化する</button>
+          maxlength="30"
+        >
+        <button class="observe-btn" id="observeBtn" onclick="observe()">
+          <span class="btn-icon">◉</span>
+          <span class="btn-text">現象を観測する</span>
+        </button>
+      </div>
+
+      <div class="chips" role="group" aria-label="サンプルワード">
+        <button class="chip" onclick="quickObserve('食べる')">🍚 食べる</button>
+        <button class="chip" onclick="quickObserve('寝る')">💤 寝る</button>
+        <button class="chip" onclick="quickObserve('怒る')">🌋 怒る</button>
+        <button class="chip" onclick="quickObserve('伝わる')">📡 伝わる</button>
+        <button class="chip" onclick="quickObserve('集まる')">🧲 集まる</button>
+        <button class="chip" onclick="quickObserve('崩れる')">🏚️ 崩れる</button>
+        <button class="chip" onclick="quickObserve('燃える')">🔥 燃える</button>
+        <button class="chip" onclick="quickObserve('咲く')">🌱 咲く</button>
+        <button class="chip" onclick="quickObserve('忘れる')">🫥 忘れる</button>
+        <button class="chip" onclick="quickObserve('作る')">🛠️ 作る</button>
       </div>
     </section>
 
-    <!-- ── CATEGORY CHIPS ── -->
-    <div class="chips-wrap">
-      <div class="chips">
-        <button class="chip" data-id="eat">🍚 食べる</button>
-        <button class="chip" data-id="sleep">💤 寝る</button>
-        <button class="chip" data-id="rest">🛋️ 休む</button>
-        <button class="chip" data-id="tidy">🧹 片付ける</button>
-        <button class="chip" data-id="go_out">🚶 外に出る</button>
-        <button class="chip" data-id="body_care">💧 体を整える</button>
-        <button class="chip" data-id="contact">📞 連絡する</button>
-        <button class="chip" data-id="make">🛠️ 作る</button>
-        <button class="chip" data-id="manage">💴 管理する</button>
-      </div>
-    </div>
-
-    <!-- ── v0.2 RESULT ── -->
-    <section id="v2-result" class="v2-result hidden">
-
-      <div class="result-header">
-        <h2 class="result-title">翻訳結果</h2>
-        <button id="btn-v2-copy" class="btn btn--copy">コピー</button>
-      </div>
-
-      <!-- Category header -->
-      <div id="v2-category-header" class="v2-category-header"></div>
-
-      <!-- Layer cards grid -->
-      <div id="v2-layer-grid" class="v2-layer-grid"></div>
-
-      <!-- ΔI block -->
-      <div class="v2-delta-block">
-        <div class="v2-delta-row">
-          <div class="v2-delta-col">
-            <span class="v2-delta-label">Before</span>
-            <p id="v2-before" class="v2-delta-body"></p>
-          </div>
-          <div class="v2-delta-arrow">ΔI</div>
-          <div class="v2-delta-col">
-            <span class="v2-delta-label">After</span>
-            <p id="v2-after" class="v2-delta-body"></p>
-          </div>
-        </div>
-        <div class="v2-delta-summary-row">
-          <span class="v2-delta-eq-label">ΔI</span>
-          <p id="v2-delta" class="v2-delta-eq-body"></p>
-        </div>
-      </div>
-
-      <!-- Next -->
-      <div class="v2-next-block">
-        <span class="v2-next-label">次に見る場所</span>
-        <p id="v2-next" class="v2-next-body"></p>
-      </div>
-
-      <!-- Axiom -->
-      <div class="result-footer">
-        <p class="result-axiom">情報は、媒体・構造・力・エネルギー・時間を通って現象になる。</p>
-      </div>
-
-      <!-- Candidates -->
-      <div id="v2-candidates" class="v2-candidates hidden"></div>
-
+    <section class="result-section" id="resultSection" aria-live="polite">
+      <!-- 結果はJSで描画 -->
     </section>
-
-    <!-- ── NOT FOUND ── -->
-    <section id="v2-not-found" class="v2-not-found hidden">
-      <p class="notfound-title">辞書にまだない現象です。</p>
-      <p class="notfound-sub">この行動は、手動分解フォームで現象化できます。</p>
-      <button id="btn-open-manual" class="btn btn--outline-accent">手動で分解する</button>
-    </section>
-
-    <!-- ── v0.1 MANUAL FORM (collapsed by default) ── -->
-    <section id="v1-section" class="v1-section hidden">
-
-      <div class="v1-section-header">
-        <h2 class="v1-section-title">手動分解フォーム <span class="v1-badge">v0.1</span></h2>
-        <button id="btn-close-v1" class="btn btn--ghost btn--sm">閉じる</button>
-      </div>
-
-      <section class="card card--target">
-        <label class="card-label" for="target">現象にしたいものは？</label>
-        <textarea id="target" class="card-textarea" placeholder="例：この考えを人に伝える　/ プロジェクトを動かす" rows="2"></textarea>
-      </section>
-
-      <div class="layer-grid">
-        <section class="card layer-card" data-layer="I">
-          <div class="layer-tag">I</div>
-          <label class="card-label" for="layer-I">情報：何の情報がある？</label>
-          <textarea id="layer-I" class="card-textarea" placeholder="例：過去の記録、感情、データ" rows="2"></textarea>
-        </section>
-        <section class="card layer-card" data-layer="M">
-          <div class="layer-tag">M</div>
-          <label class="card-label" for="layer-M">媒体：その情報は何に乗る？</label>
-          <textarea id="layer-M" class="card-textarea" placeholder="例：言葉、身体、紙、画面" rows="2"></textarea>
-        </section>
-        <section class="card layer-card" data-layer="S">
-          <div class="layer-tag">S</div>
-          <label class="card-label" for="layer-S">構造：どう並ぶと意味になる？</label>
-          <textarea id="layer-S" class="card-textarea" placeholder="例：時系列、対比、階層" rows="2"></textarea>
-        </section>
-        <section class="card layer-card" data-layer="F">
-          <div class="layer-tag">F</div>
-          <label class="card-label" for="layer-F">力：何が動かす？何が重い？</label>
-          <textarea id="layer-F" class="card-textarea" placeholder="例：締め切り、欲求、恐れ" rows="2"></textarea>
-        </section>
-        <section class="card layer-card" data-layer="E">
-          <div class="layer-tag">E</div>
-          <label class="card-label" for="layer-E">エネルギー：動かす余力は？</label>
-          <textarea id="layer-E" class="card-textarea" placeholder="例：時間的余裕、体力、集中力" rows="2"></textarea>
-        </section>
-        <section class="card layer-card" data-layer="T">
-          <div class="layer-tag">T</div>
-          <label class="card-label" for="layer-T">時間：いつ変化する？</label>
-          <textarea id="layer-T" class="card-textarea" placeholder="例：今日、3ヶ月後、締め切り前" rows="2"></textarea>
-        </section>
-      </div>
-
-      <section class="card card--delta">
-        <div class="delta-row">
-          <div class="delta-col">
-            <label class="card-label" for="before">Before：変化前の状態は？</label>
-            <textarea id="before" class="card-textarea" placeholder="例：誰も知らない" rows="3"></textarea>
-          </div>
-          <div class="delta-arrow">ΔI</div>
-          <div class="delta-col">
-            <label class="card-label" for="after">After：変化後にどうなってほしい？</label>
-            <textarea id="after" class="card-textarea" placeholder="例：伝わっている" rows="3"></textarea>
-          </div>
-        </div>
-      </section>
-
-      <div class="action-row">
-        <button id="btn-v1-analyze" class="btn btn--primary">現象化を見る</button>
-        <button id="btn-v1-reset" class="btn btn--ghost">リセット</button>
-      </div>
-
-      <section id="v1-result-section" class="result-section hidden">
-        <div class="result-header">
-          <h2 class="result-title">分析結果</h2>
-          <button id="btn-v1-copy" class="btn btn--copy">コピー</button>
-        </div>
-        <div class="result-card">
-          <div class="result-block">
-            <h3 class="result-label">現象化度</h3>
-            <div class="gauge-wrap">
-              <div class="gauge-bar">
-                <div id="gauge-fill" class="gauge-fill"></div>
-              </div>
-              <span id="gauge-text" class="gauge-text">0 / 6</span>
-            </div>
-            <p id="missing-layers" class="missing-layers"></p>
-          </div>
-          <div class="result-block">
-            <h3 class="result-label">現在の状態</h3>
-            <p id="current-state" class="result-body"></p>
-          </div>
-          <div class="result-block">
-            <h3 class="result-label">ΔI の読み</h3>
-            <p id="delta-read" class="result-body"></p>
-          </div>
-          <div class="result-block">
-            <h3 class="result-label">現象化の読み</h3>
-            <p id="phenomenon-read" class="result-body"></p>
-          </div>
-          <div class="result-block result-block--next">
-            <h3 class="result-label">次の一手</h3>
-            <p id="next-step" class="result-body"></p>
-          </div>
-          <div class="result-footer">
-            <p class="result-axiom">情報は、媒体・構造・力・エネルギー・時間を通って現象になる。</p>
-          </div>
-        </div>
-      </section>
-
-    </section>
-    <!-- /v1-section -->
 
   </main>
+
+  <footer class="footer">
+    <p class="footer-note">これは運命を変える道具ではなく、世界の見え方を変えるための観察モデルです。</p>
+    <p class="footer-sig">現象化OS Core β — 仮説実験モデル</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>

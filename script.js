@@ -1,714 +1,580 @@
-/* ─────────────────────────────────────────
-   現象化OS v0.2 — script.js
-   ───────────────────────────────────────── */
-
 'use strict';
 
-/* ══════════════════════════════════════════
-   辞書データ
-══════════════════════════════════════════ */
-
-const phenomenonDictionary = [
+/* ─── 辞書データ ──────────────────────────────────── */
+const phenomenonCoreDictionary = [
   {
     id: "eat",
     emoji: "🍚",
-    category: "食べる",
-    role: "身体リソース補給",
-    keywords: ["食べる", "ご飯", "朝ご飯", "飯", "空腹", "腹減った", "食事"],
-    I: "空腹感、食べ物の有無、所持金、食べられるもの、身体燃料の不足",
-    M: "食べ物、口、胃、皿、台所、コンビニ、店",
-    S: "選ぶ → 用意する → 食べる → 胃に入る → 終える",
-    F: "空腹、手を伸ばす、立つ、温める、噛む、飲み込む",
-    E: "立てるか、作れるか、買いに行けるか、噛む余力があるか",
-    T: "今、10分以内、朝のうち、空腹が強くなる前",
-    before: "空腹、身体燃料が少ない、判断が荒くなりやすい",
-    after: "胃に燃料が入り、判断と身体状態が少し安定する",
-    delta: "空腹 → 身体燃料が入る",
-    next: "食べ物を1つだけ目の前に出す"
+    word: "食べる",
+    phenomenonName: "取り込み・変換現象",
+    keywords: ["食べる", "食う", "摂取", "取り込む", "食事", "ご飯", "栄養"],
+    definition: "外部対象が境界を越えて内部へ入り、分解・同化され、内部状態を変化させる現象。",
+    primitives: ["差分", "境界", "流入", "変換", "同化", "内部更新"],
+    layers: {
+      I: "外部対象の存在、内部の不足、取り込み可能性の識別、内外差分の情報",
+      M: "境界面、通路、身体、細胞膜、口、根、入力装置、取り込みの場",
+      S: "識別 → 接触 → 境界通過 → 分解 → 同化 → 内部状態更新",
+      F: "不足差分、代謝圧、生存圧、濃度差、欲求、取り込みへ向かう勾配",
+      E: "取り込み・分解・吸収・変換に使えるエネルギー",
+      T: "取り込み前、取り込み中、分解中、吸収後、内部状態が変わるまでの時間幅"
+    },
+    deltaI: "外部対象 → 内部状態の変化情報",
+    scales: [
+      "人間なら：ご飯を食べる",
+      "動物なら：餌を食べる",
+      "植物なら：光・水・養分を取り込む",
+      "細胞なら：分子を膜の内側へ取り込む",
+      "AIなら：入力データによって内部状態や出力傾向が更新される"
+    ],
+    hypothesisCheck: "食べるという現象は、外部と内部の差分、境界、通路、変換エネルギー、時間幅によって観測できるため、IMSFETで比較的説明しやすい。"
   },
+
   {
     id: "sleep",
     emoji: "💤",
-    category: "寝る",
-    role: "睡眠移行・回復",
-    keywords: ["寝る", "眠い", "睡眠", "布団", "横になる", "寝たい", "眠気"],
-    I: "眠気、疲労、薬の状態、明日の予定、現在の覚醒レベル",
-    M: "布団、枕、部屋、照明、スマホ、充電場所",
-    S: "画面を閉じる → 光を落とす → 横になる → 入眠する",
-    F: "眠気、重力、スマホを置く、照明を消す、身体を横にする",
-    E: "起き続ける余力が下がっている、回復に回す身体リソース",
-    T: "夜、消灯後、今から30分以内、眠気が来ている間",
-    before: "覚醒している、脳が動き続けている、身体が回復待ち",
-    after: "睡眠に入り、身体修復フェーズへ移行する",
-    delta: "覚醒 → 睡眠",
-    next: "スマホを充電位置に置き、画面を閉じる"
+    word: "寝る",
+    phenomenonName: "外部応答低下・内部処理移行現象",
+    keywords: ["寝る", "眠る", "睡眠", "眠い", "休眠", "休止"],
+    definition: "外部への応答を低下させ、内部の修復・整理・再構成へ処理配分を切り替える状態遷移現象。",
+    primitives: ["周期", "応答低下", "遮断", "内部処理", "回復", "再編"],
+    layers: {
+      I: "疲労、処理過多、修復要求、外部応答を下げる必要、周期情報",
+      M: "身体、神経系、脳、休止空間、暗さ、環境、休眠可能な媒体",
+      S: "活動状態 → 外部応答低下 → 入力遮断 → 内部処理優先 → 修復・整理",
+      F: "疲労圧、眠気、概日リズム、外部刺激の低下、内部回復への勾配",
+      E: "外部活動へ使っていたエネルギーを、内部修復・再編へ再配分するエネルギー",
+      T: "活動相から休止相へ移る周期時間、睡眠中の処理時間、再起動までの時間幅"
+    },
+    deltaI: "外部応答モード → 内部修復・再編モード",
+    scales: [
+      "人間なら：眠る",
+      "動物なら：睡眠や休眠を行う",
+      "植物なら：夜間に活動相が変わる",
+      "機械なら：スリープモードへ入る",
+      "AIなら：処理を止め、次の入力まで待機状態になる"
+    ],
+    hypothesisCheck: "寝るという現象は、周期・エネルギー再配分・応答低下・内部処理への切替として見ると、IMSFETで観測しやすい。"
   },
+
   {
-    id: "rest",
-    emoji: "🛋️",
-    category: "休む／怠ける",
-    role: "稼働率調整・省エネ制御",
-    keywords: ["休む", "怠ける", "サボる", "何もしない", "だるい", "疲れた", "停止"],
-    I: "疲労感、飽和感、処理過多、身体の停止信号",
-    M: "椅子、床、布団以外の休憩場所、スマホ、静かな場所",
-    S: "止まる → 負荷を下げる → 回復を待つ → 再開可能性を見る",
-    F: "作業圧を下げる、選択肢を減らす、身体を固定する",
-    E: "残エネルギーを温存する、回復に回す",
-    T: "今、数分、一区切り、疲労が強い間",
-    before: "稼働率が高すぎる、処理が詰まっている",
-    after: "負荷が下がり、再起動の余地が生まれる",
-    delta: "過稼働 → 省エネ状態",
-    next: "やることを増やさず、まず停止状態を許可する"
+    id: "anger",
+    emoji: "🌋",
+    word: "怒る",
+    phenomenonName: "境界侵害検知・反発圧上昇現象",
+    keywords: ["怒る", "怒り", "腹立つ", "キレる", "不満", "イライラ", "反発"],
+    definition: "境界・期待・ルール・身体状態に対する侵害やズレが検知され、反発する圧が上昇する現象。",
+    primitives: ["差分", "境界", "検知", "反発", "圧力上昇", "表出"],
+    layers: {
+      I: "侵害、ズレ、不一致、不公平、期待との差分、境界が乱されたという情報",
+      M: "身体、神経系、記憶、言葉、関係性、社会的文脈",
+      S: "期待 → ズレ検知 → 境界反応 → 内部圧上昇 → 表情・言葉・行動への表出",
+      F: "境界を守る圧、防衛圧、反発圧、過去記憶の引力、身体反応の勢い",
+      E: "反応に使われる身体エネルギー、声・表情・行動に変換されるエネルギー",
+      T: "瞬間的検知、反応の立ち上がり、持続、鎮静までの時間"
+    },
+    deltaI: "ズレの検知情報 → 境界を守るための反発情報",
+    scales: [
+      "人間なら：怒る、反論する、黙る、距離を取る",
+      "動物なら：威嚇する、縄張りを守る",
+      "細胞なら：異物を検知して防御反応を起こす",
+      "社会なら：抗議や炎上が起きる",
+      "システムなら：異常入力に対してアラートを出す"
+    ],
+    hypothesisCheck: "怒るという現象は、感情ではなく境界・差分・反発圧の上昇として見ると、IMSFETで扱いやすくなる。"
   },
+
   {
-    id: "tidy",
-    emoji: "🧹",
-    category: "片付ける",
-    role: "空間の検索性改善",
-    keywords: ["片付け", "掃除", "部屋", "整理", "散らかってる", "ゴミ", "探せない"],
-    I: "物の位置、必要な物、不要な物、探している物",
-    M: "床、机、棚、ゴミ袋、箱、収納場所",
-    S: "一箇所だけ見る → 分ける → 捨てる／置く → 通路を作る",
-    F: "手で拾う、袋に入れる、移動する、視界から減らす",
-    E: "立てるか、しゃがめるか、5分だけ動けるか",
-    T: "今から5分、訪看前、出かける前、寝る前ではない時間",
-    before: "物理アセットが散らばり、探索コストが高い",
-    after: "必要な物へアクセスしやすくなり、行動の詰まりが減る",
-    delta: "検索しにくい空間 → 探しやすい空間",
-    next: "床か机のどちらか一箇所だけ選ぶ"
+    id: "transmit",
+    emoji: "📡",
+    word: "伝わる",
+    phenomenonName: "情報媒体間の構造転写現象",
+    keywords: ["伝わる", "伝える", "通信", "共有", "説明", "理解", "届く"],
+    definition: "ある媒体上の情報構造が、別の媒体へ移り、相手側の内部状態や配置を変化させる現象。",
+    primitives: ["情報", "媒体", "転写", "変換", "受信", "内部更新"],
+    layers: {
+      I: "伝達される情報、意味、パターン、差分、符号、意図",
+      M: "言葉、音、文字、表情、電波、紙、画面、神経系、通信路",
+      S: "符号化 → 媒体通過 → 受信 → 解釈 → 内部構造の更新",
+      F: "伝えたい圧、注意を引く力、関係性、文脈、媒体の伝達力",
+      E: "発話・記録・送信・受信・解釈に使われるエネルギー",
+      T: "発信から受信までの遅延、理解までの時間、記憶に残る時間"
+    },
+    deltaI: "発信側の情報構造 → 受信側の内部状態変化",
+    scales: [
+      "人間なら：話が伝わる",
+      "生物なら：鳴き声やフェロモンで情報が伝わる",
+      "機械なら：信号が送受信される",
+      "社会なら：噂やニュースが広がる",
+      "AIなら：プロンプトが出力構造に反映される"
+    ],
+    hypothesisCheck: "伝わるという現象は、情報・媒体・構造転写・受信側の変化として見ると、IMSFETとの相性がかなり高い。"
   },
+
   {
-    id: "go_out",
-    emoji: "🚶",
-    category: "外に出る／移動する",
-    role: "環境変更・移動",
-    keywords: ["外", "外出", "散歩", "買い物", "Uber", "ロードー", "出る", "歩く", "電車", "自転車"],
-    I: "目的地、天気、所持金、体力、移動手段、必要物",
-    M: "靴、鍵、スマホ、財布、道、駅、自転車、バッグ",
-    S: "持ち物確認 → 靴を履く → ドアを出る → 移動する",
-    F: "立つ、歩く、ドアを開ける、乗る、運ぶ",
-    E: "外気に耐える体力、移動する余力、帰ってくる余力",
-    T: "今、昼、夕方、天気が崩れる前、暑さが強くなる前",
-    before: "室内に固定され、環境入力が閉じている",
-    after: "外部環境に接続され、移動と入力が発生する",
-    delta: "室内固定 → 外部接続",
-    next: "鍵・スマホ・財布の3点だけ確認する"
+    id: "gather",
+    emoji: "🧲",
+    word: "集まる",
+    phenomenonName: "勾配・目的・場による密度上昇現象",
+    keywords: ["集まる", "集合", "集結", "寄る", "群れる", "集まり", "密集"],
+    definition: "分散していた要素が、引力・目的・場・条件によって特定の領域へ近づき、密度が上がる現象。",
+    primitives: ["勾配", "引力", "場", "接近", "密度上昇", "配置変化"],
+    layers: {
+      I: "集まる理由、目的、位置情報、共通性、引き寄せ条件",
+      M: "空間、場、ネットワーク、場所、重力場、コミュニティ、容器",
+      S: "分散 → 方向づけ → 接近 → 密度上昇 → 集合状態",
+      F: "引力、目的圧、興味、必要性、重力、社会的吸引、場の力",
+      E: "移動・接近・接続に必要なエネルギー",
+      T: "集まり始める時間、密度が上がる時間、解散までの時間"
+    },
+    deltaI: "分散配置 → 集合配置",
+    scales: [
+      "人間なら：人が集まる、会合ができる",
+      "動物なら：群れを作る",
+      "物理なら：重力で物質が集まる",
+      "情報なら：似たデータがクラスタ化される",
+      "社会なら：目的や不安によって集団が形成される"
+    ],
+    hypothesisCheck: "集まるという現象は、分散状態から集合状態への配置変化として観測できるため、IMSFETで扱いやすい。"
   },
+
   {
-    id: "body_care",
-    emoji: "💧",
-    category: "体を整える",
-    role: "身体条件の基礎調整",
-    keywords: ["水", "飲む", "薬", "風呂", "シャワー", "ストレッチ", "体調", "整える", "歯磨き"],
-    I: "喉の渇き、薬の時間、汗、こわばり、口内状態、身体の違和感",
-    M: "水、薬、洗面所、風呂場、タオル、歯ブラシ、身体",
-    S: "気づく → 道具を取る → 実行する → 身体状態を戻す",
-    F: "飲む、洗う、伸ばす、磨く、薬を口に入れる",
-    E: "立つ余力、洗う余力、短時間だけ動ける余力",
-    T: "今、薬の時間、外出前、寝る前、汗をかいた後",
-    before: "身体条件が荒れており、判断や行動にノイズがある",
-    after: "身体条件が少し整い、次の判断がしやすくなる",
-    delta: "身体ノイズあり → 基礎条件の安定",
-    next: "水・薬・歯ブラシのうち、一番近いものを使う"
+    id: "collapse",
+    emoji: "🏚️",
+    word: "崩れる",
+    phenomenonName: "構造保持力低下現象",
+    keywords: ["崩れる", "壊れる", "倒れる", "破綻", "散らかる", "崩壊", "ほどける"],
+    definition: "構造を保っていた関係・配置・力の均衡が失われ、形や秩序が維持できなくなる現象。",
+    primitives: ["構造", "保持", "不均衡", "崩壊", "散逸", "再配置"],
+    layers: {
+      I: "構造の弱点、負荷、ズレ、劣化、保持条件の不足情報",
+      M: "物体、空間、関係性、制度、身体、記憶、構造が乗っている場",
+      S: "保持状態 → 負荷蓄積 → 均衡喪失 → 崩壊 → 再配置",
+      F: "重力、負荷、圧力、摩耗、矛盾、支える力の低下",
+      E: "構造を保つエネルギー、または崩壊時に放出・散逸するエネルギー",
+      T: "ゆっくり劣化する時間、臨界点を越える瞬間、崩れた後の再配置時間"
+    },
+    deltaI: "保持された構造情報 → ほどけた配置情報",
+    scales: [
+      "物理なら：建物や山が崩れる",
+      "生活なら：部屋の秩序が崩れる",
+      "身体なら：姿勢や体調が崩れる",
+      "関係なら：信頼構造が崩れる",
+      "情報なら：記憶や分類が保てなくなる"
+    ],
+    hypothesisCheck: "崩れるという現象は、構造保持力と負荷の関係で観測できるため、IMSFETのSとFが特に見えやすい。"
   },
+
   {
-    id: "contact",
-    emoji: "📞",
-    category: "連絡する／話す",
-    role: "外部との情報交換",
-    keywords: ["連絡", "LINE", "電話", "メール", "返信", "話す", "相談", "訪看", "友人", "ラウンジ"],
-    I: "伝えたい内容、相手、用件、返答待ちの情報",
-    M: "LINE、電話、メール、会話、メモ、ラウンジ、訪看の場",
-    S: "相手を選ぶ → 用件を短くする → 送る／話す → 反応を受け取る",
-    F: "文字を打つ、声を出す、送信する、話しかける",
-    E: "対人エネルギー、文章を書く余力、声を出す余力",
-    T: "今、相手が見やすい時間、訪看時、食堂やラウンジにいる時",
-    before: "情報が自分の中だけに留まっている",
-    after: "外部へ情報が渡り、反応や入力が返ってくる可能性が生まれる",
-    delta: "内側の情報 → 外部との情報交換",
-    next: "用件を一文だけにする"
+    id: "burn",
+    emoji: "🔥",
+    word: "燃える",
+    phenomenonName: "酸化・エネルギー放出現象",
+    keywords: ["燃える", "燃焼", "火", "発火", "炎", "燃やす", "熱"],
+    definition: "物質が酸素などと反応し、保持していた化学エネルギーを熱や光として放出しながら構造を変える現象。",
+    primitives: ["接触", "反応", "変換", "放出", "熱", "構造変化"],
+    layers: {
+      I: "燃える物質、酸素、温度、発火条件、反応可能性の情報",
+      M: "空気、物質表面、炎、反応場、熱が伝わる媒体",
+      S: "接触 → 発火 → 酸化反応 → 熱・光の放出 → 灰・煙・別物質への変化",
+      F: "化学反応の進行、温度差、酸素との結合、反応が連鎖する力",
+      E: "物質に保持されていた化学エネルギー、発火に必要なエネルギー、放出される熱と光",
+      T: "発火前、燃焼中、燃え広がる時間、燃え尽きるまでの時間"
+    },
+    deltaI: "燃える前の物質情報 → 熱・光・煙・灰として再配置された情報",
+    scales: [
+      "物理なら：火が燃える",
+      "身体なら：代謝でエネルギーが取り出される",
+      "感情なら：熱が上がるように反応が強まる",
+      "社会なら：炎上として情報反応が連鎖する",
+      "星なら：核融合により光と熱が放出される"
+    ],
+    hypothesisCheck: "燃えるという現象は、エネルギー変換と構造変化が見えやすいため、IMSFETのEとTを検証する代表例になる。"
   },
+
+  {
+    id: "bloom",
+    emoji: "🌱",
+    word: "咲く",
+    phenomenonName: "内部構造展開現象",
+    keywords: ["咲く", "開花", "開く", "芽吹く", "展開", "育つ", "花"],
+    definition: "内部に準備されていた構造が、条件の成立によって外側へ展開され、見える形になる現象。",
+    primitives: ["蓄積", "条件成立", "展開", "形態変化", "表出", "成長"],
+    layers: {
+      I: "内部に保持された設計情報、成長段階、外部条件、展開可能性",
+      M: "種、茎、細胞、身体、環境、土、水、光、表出の場",
+      S: "準備 → 蓄積 → 条件成立 → 展開 → 形として現れる",
+      F: "成長圧、光や温度への反応、内部から外へ開く力",
+      E: "成長・細胞分裂・形態変化に使われるエネルギー",
+      T: "発芽から開花までの時間、条件がそろう季節、展開に必要な時間幅"
+    },
+    deltaI: "内部に潜在していた構造情報 → 外部に見える形の情報",
+    scales: [
+      "植物なら：花が咲く",
+      "人間なら：才能や考えが表に出る",
+      "創作なら：アイデアが作品として開く",
+      "社会なら：運動や文化が可視化される",
+      "情報なら：圧縮されていた構造が展開される"
+    ],
+    hypothesisCheck: "咲くという現象は、内部情報の蓄積と条件成立による外部展開として観測できるため、IMSFETで広く応用できる。"
+  },
+
+  {
+    id: "forget",
+    emoji: "🫥",
+    word: "忘れる",
+    phenomenonName: "情報アクセス経路弱化現象",
+    keywords: ["忘れる", "忘却", "思い出せない", "抜ける", "記憶", "消える"],
+    definition: "情報そのもの、またはその情報へ到達する経路が弱まり、必要な時に取り出しにくくなる現象。",
+    primitives: ["保持", "経路", "減衰", "アクセス低下", "ノイズ", "再構成"],
+    layers: {
+      I: "記憶された情報、手がかり、関連情報、アクセス経路の状態",
+      M: "脳、神経回路、メモ、記録媒体、文脈、検索経路",
+      S: "記録 → 保持 → 手がかり低下 → アクセス困難 → 再検索または再構成",
+      F: "時間経過、干渉、注意の移動、ノイズ、経路を使わないことによる弱化",
+      E: "思い出すために使う認知エネルギー、検索に必要な集中力",
+      T: "記録から時間が経つ過程、使わない期間、思い出すまでの探索時間"
+    },
+    deltaI: "アクセス可能な情報 → アクセスしにくい情報",
+    scales: [
+      "人間なら：名前や用事を忘れる",
+      "身体なら：使わない動作がぎこちなくなる",
+      "社会なら：文化や記録が失われる",
+      "コンピュータなら：リンク切れやインデックス消失が起きる",
+      "AIなら：現在の文脈から外れた情報を参照できなくなる"
+    ],
+    hypothesisCheck: "忘れるという現象は、情報の消滅というよりアクセス経路の弱化として見ると、IMSFETでかなり整理しやすい。"
+  },
+
   {
     id: "make",
     emoji: "🛠️",
-    category: "作る／作業する",
-    role: "創作・制作・労働",
-    keywords: ["作る", "作業", "アプリ", "GitHub", "コード", "AI", "Pages", "記事", "note", "書く", "制作"],
-    I: "アイデア、仕様、素材、コード、文章、改善点",
-    M: "iPhone、GitHub Pages、ChatGPT、Gemini、Copilot、HTML/CSS/JS、note",
-    S: "アイデア → 仕様 → 形にする → 確認する → 修正する",
-    F: "入力する、コピーする、貼る、アップロードする、公開する",
-    E: "集中力、通信、バッテリー、姿勢、画面を見る余力",
-    T: "今、30分単位、煮詰まる前、食事や休憩で区切れる時間",
-    before: "アイデアや素材が頭の中・会話内にある",
-    after: "URL、記事、画面、コードなど触れる形になる",
-    delta: "構想 → 触れる成果物",
-    next: "アプリ名か1画面の目的を決める"
-  },
-  {
-    id: "manage",
-    emoji: "💴",
-    category: "管理する",
-    role: "お金・予定・手続きの可視化",
-    keywords: ["財布", "銀行", "残高", "支払い", "お金", "予定", "手続き", "役所", "請求", "家賃"],
-    I: "残高、支払い予定、期限、必要書類、所持金、使える範囲",
-    M: "財布、銀行アプリ、メモ、カレンダー、書類、役所窓口",
-    S: "確認する → 分ける → 優先順をつける → 次の期限を見る",
-    F: "アプリを開く、数字を見る、メモする、支払う、提出する",
-    E: "数字を見る余力、手続きに耐える余力、外出できる余力",
-    T: "今日、月初、期限前、入金後、窓口が開いている時間",
-    before: "制約条件が見えず、行動範囲がぼやけている",
-    after: "使える範囲・期限・次の処理が見える",
-    delta: "不明な制約 → 見える制約",
-    next: "財布か残高のどちらか一つだけ確認する"
+    word: "作る",
+    phenomenonName: "内部情報の外部構造化現象",
+    keywords: ["作る", "創る", "制作", "生成", "書く", "組み立てる", "形にする"],
+    definition: "内部にある情報・意図・構想が、媒体上に構造として配置され、外部から観測可能な形になる現象。",
+    primitives: ["内部情報", "媒体化", "構造化", "変換", "外部化", "保持"],
+    layers: {
+      I: "構想、意図、設計、記憶、素材、完成イメージ、差分情報",
+      M: "手、道具、言葉、紙、画面、コード、素材、空間",
+      S: "構想 → 素材選択 → 配置 → 加工 → 形として固定 → 観測可能になる",
+      F: "作りたい圧、必要性、好奇心、締切、手を動かす力、構造をまとめる力",
+      E: "集中力、身体エネルギー、道具を動かすエネルギー、媒体を変形させるエネルギー",
+      T: "構想から完成までの時間、試行錯誤の時間、形が保たれる時間"
+    },
+    deltaI: "内部にあった情報 → 外部に配置された構造情報",
+    scales: [
+      "人間なら：料理、文章、アプリ、道具を作る",
+      "生物なら：巣や殻や身体構造を作る",
+      "社会なら：制度や文化を作る",
+      "物理なら：力と条件によって形が形成される",
+      "AIなら：入力情報から文章やコードを生成する"
+    ],
+    hypothesisCheck: "作るという現象は、内部情報が媒体に乗り、構造として固定される過程なので、IMSFETの全要素を観察しやすい。"
   }
 ];
 
-/* ── チップの代表テキストマップ ────────────── */
-
-const chipRepresentatives = {
-  eat:       "朝ご飯食べる",
-  sleep:     "寝る",
-  rest:      "休む",
-  tidy:      "部屋を片付ける",
-  go_out:    "外に出る",
-  body_care: "体を整える",
-  contact:   "連絡する",
-  make:      "アプリ作る",
-  manage:    "お金を管理する"
+/* ─── レイヤー定義 ───────────────────────────────── */
+const LAYER_META = {
+  I: { label: "情報",       cls: "layer-card--I" },
+  M: { label: "媒体",       cls: "layer-card--M" },
+  S: { label: "構造",       cls: "layer-card--S" },
+  F: { label: "力",         cls: "layer-card--F" },
+  E: { label: "エネルギー", cls: "layer-card--E" },
+  T: { label: "時間",       cls: "layer-card--T" }
 };
 
-/* ── localStorageキー ─────────────────────── */
+/* ─── 状態 ────────────────────────────────────────── */
+let currentEntry = null;
 
-const STORAGE_KEY_V2 = 'genshouka_os_v02';
-const STORAGE_KEY_V1 = 'genshouka_os_v01';
-const LAYERS_V1 = ['I', 'M', 'S', 'F', 'E', 'T'];
+/* ─── localStorage ───────────────────────────────── */
+const LS_KEY = 'phenCore_lastWord';
 
-/* ══════════════════════════════════════════
-   DOM refs
-══════════════════════════════════════════ */
-
-const $v2Input        = document.getElementById('v2-input');
-const $btnV2Analyze   = document.getElementById('btn-v2-analyze');
-const $v2Result       = document.getElementById('v2-result');
-const $v2CategoryHeader = document.getElementById('v2-category-header');
-const $v2LayerGrid    = document.getElementById('v2-layer-grid');
-const $v2Before       = document.getElementById('v2-before');
-const $v2After        = document.getElementById('v2-after');
-const $v2Delta        = document.getElementById('v2-delta');
-const $v2Next         = document.getElementById('v2-next');
-const $v2NotFound     = document.getElementById('v2-not-found');
-const $v2Candidates   = document.getElementById('v2-candidates');
-const $btnV2Copy      = document.getElementById('btn-v2-copy');
-
-const $btnOpenManual  = document.getElementById('btn-open-manual');
-const $v1Section      = document.getElementById('v1-section');
-const $btnCloseV1     = document.getElementById('btn-close-v1');
-
-// v0.1 DOM
-const $target         = document.getElementById('target');
-const $before         = document.getElementById('before');
-const $after          = document.getElementById('after');
-const $btnV1Analyze   = document.getElementById('btn-v1-analyze');
-const $btnV1Reset     = document.getElementById('btn-v1-reset');
-const $btnV1Copy      = document.getElementById('btn-v1-copy');
-const $v1ResultSection = document.getElementById('v1-result-section');
-const $gaugeFill      = document.getElementById('gauge-fill');
-const $gaugeText      = document.getElementById('gauge-text');
-const $missingLayers  = document.getElementById('missing-layers');
-const $currentState   = document.getElementById('current-state');
-const $deltaRead      = document.getElementById('delta-read');
-const $phenomenonRead = document.getElementById('phenomenon-read');
-const $nextStep       = document.getElementById('next-step');
-
-/* ══════════════════════════════════════════
-   v0.2 — キーワード判定
-══════════════════════════════════════════ */
-
-function matchDictionary(input) {
-  const normalized = input.replace(/\s/g, '');
-  const matches = [];
-  for (const entry of phenomenonDictionary) {
-    for (const kw of entry.keywords) {
-      if (normalized.includes(kw)) {
-        matches.push(entry);
-        break;
-      }
-    }
-  }
-  return matches;
+function saveLastWord(word) {
+  try { localStorage.setItem(LS_KEY, word); } catch (_) {}
 }
 
-/* ══════════════════════════════════════════
-   v0.2 — 結果表示
-══════════════════════════════════════════ */
-
-function renderV2Result(entry, inputText, allMatches) {
-  // Category header
-  $v2CategoryHeader.innerHTML =
-    '<div class="v2-cat-emoji">' + entry.emoji + '</div>' +
-    '<div class="v2-cat-name">' + entry.category + '</div>' +
-    '<div class="v2-cat-role">' + entry.role + '</div>' +
-    '<div class="v2-input-echo">入力：' + escapeHtml(inputText) + '</div>';
-
-  // Layer grid
-  const layerDefs = [
-    { key: 'I', name: '情報' },
-    { key: 'M', name: '媒体' },
-    { key: 'S', name: '構造' },
-    { key: 'F', name: '力' },
-    { key: 'E', name: 'エネルギー' },
-    { key: 'T', name: '時間' },
-  ];
-  $v2LayerGrid.innerHTML = layerDefs.map(function(ld) {
-    return (
-      '<div class="v2-layer-card">' +
-        '<div class="v2-layer-tag">' + ld.key + '</div>' +
-        '<div class="v2-layer-name">' + ld.name + '</div>' +
-        '<div class="v2-layer-body">' + escapeHtml(entry[ld.key]) + '</div>' +
-      '</div>'
-    );
-  }).join('');
-
-  // Before / After / ΔI
-  $v2Before.textContent = entry.before;
-  $v2After.textContent  = entry.after;
-  $v2Delta.textContent  = entry.delta;
-
-  // Next
-  $v2Next.textContent = entry.next;
-
-  // Candidates (複数一致)
-  if (allMatches.length > 1) {
-    const others = allMatches.filter(function(e) { return e.id !== entry.id; });
-    $v2Candidates.innerHTML =
-      '<p class="v2-candidates-label">近いカテゴリ：</p>' +
-      '<div class="v2-candidate-chips">' +
-        others.map(function(e) {
-          return '<button class="v2-candidate-chip" data-id="' + e.id + '">' + e.emoji + ' ' + e.category + '</button>';
-        }).join('') +
-      '</div>';
-    $v2Candidates.classList.remove('hidden');
-
-    // candidate chip click
-    $v2Candidates.querySelectorAll('.v2-candidate-chip').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var id = btn.getAttribute('data-id');
-        var found = phenomenonDictionary.find(function(e) { return e.id === id; });
-        if (found) renderV2Result(found, inputText, allMatches);
-      });
-    });
-  } else {
-    $v2Candidates.classList.add('hidden');
-  }
-
-  // Show result, hide not-found
-  $v2Result.classList.remove('hidden');
-  $v2NotFound.classList.add('hidden');
-  $v2Result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+function loadLastWord() {
+  try { return localStorage.getItem(LS_KEY) || ''; } catch (_) { return ''; }
 }
 
-function showV2NotFound() {
-  $v2Result.classList.add('hidden');
-  $v2NotFound.classList.remove('hidden');
-  $v2NotFound.scrollIntoView({ behavior: 'smooth', block: 'start' });
+/* ─── 検索ロジック ───────────────────────────────── */
+function findEntry(query) {
+  const q = query.trim();
+  if (!q) return null;
+
+  // 完全一致
+  let hit = phenomenonCoreDictionary.find(e => e.word === q);
+  if (hit) return hit;
+
+  // キーワード部分一致
+  hit = phenomenonCoreDictionary.find(e =>
+    e.keywords.some(kw => kw === q)
+  );
+  if (hit) return hit;
+
+  // キーワードに含む
+  hit = phenomenonCoreDictionary.find(e =>
+    e.keywords.some(kw => kw.includes(q) || q.includes(kw))
+  );
+  if (hit) return hit;
+
+  return null;
 }
 
-/* ── main analyze ── */
-
-function v2Analyze() {
-  var input = ($v2Input.value || '').trim();
-  if (!input) {
-    $v2Input.focus();
+/* ─── メイン観測関数 ─────────────────────────────── */
+function observe() {
+  const input = document.getElementById('wordInput');
+  const query = (input ? input.value : '').trim();
+  if (!query) {
+    if (input) input.focus();
     return;
   }
-  saveV2ToStorage(input);
-
-  var matches = matchDictionary(input);
-  if (matches.length === 0) {
-    showV2NotFound();
-  } else {
-    renderV2Result(matches[0], input, matches);
-  }
+  saveLastWord(query);
+  const entry = findEntry(query);
+  currentEntry = entry;
+  renderResult(query, entry);
 }
 
-/* ══════════════════════════════════════════
-   v0.2 — コピー
-══════════════════════════════════════════ */
-
-function buildV2CopyText() {
-  var input = ($v2Input.value || '').trim();
-  var catName = $v2CategoryHeader.querySelector('.v2-cat-name');
-  var catRole = $v2CategoryHeader.querySelector('.v2-cat-role');
-  var catEmoji = $v2CategoryHeader.querySelector('.v2-cat-emoji');
-
-  if (!catName) return '';
-
-  var layers = ['I', 'M', 'S', 'F', 'E', 'T'];
-  var layerNames = { I: '情報', M: '媒体', S: '構造', F: '力', E: 'エネルギー', T: '時間' };
-  var layerCards = $v2LayerGrid.querySelectorAll('.v2-layer-card');
-  var layerLines = [];
-  layerCards.forEach(function(card, i) {
-    var key = layers[i];
-    var body = card.querySelector('.v2-layer-body');
-    if (key && body) {
-      layerLines.push(key + ' ' + layerNames[key] + '：\n' + body.textContent);
-    }
-  });
-
-  return [
-    '── 現象化OS v0.2 ──',
-    '入力：',
-    input,
-    'カテゴリ：',
-    (catEmoji ? catEmoji.textContent : '') + ' ' + catName.textContent,
-    (catRole ? catRole.textContent : ''),
-    '',
-    layerLines.join('\n\n'),
-    '',
-    'ΔI：',
-    $v2Delta.textContent,
-    'Before：',
-    $v2Before.textContent,
-    'After：',
-    $v2After.textContent,
-    '次に見る場所：',
-    $v2Next.textContent,
-    '',
-    '情報は、媒体・構造・力・エネルギー・時間を通って現象になる。'
-  ].join('\n');
+function quickObserve(word) {
+  const input = document.getElementById('wordInput');
+  if (input) input.value = word;
+  observe();
 }
 
-/* ══════════════════════════════════════════
-   v0.1 — 分析
-══════════════════════════════════════════ */
+/* ─── HTML描画 ───────────────────────────────────── */
+function renderResult(query, entry) {
+  const section = document.getElementById('resultSection');
+  if (!section) return;
 
-function getLayerValue(layer) {
-  var el = document.getElementById('layer-' + layer);
-  return el ? el.value.trim() : '';
-}
+  // スキャンバー
+  const scanDiv = document.createElement('div');
+  scanDiv.className = 'scan-bar';
+  section.innerHTML = '';
+  section.appendChild(scanDiv);
 
-function getV1Value(id) {
-  var el = document.getElementById(id);
-  return el ? el.value.trim() : '';
-}
-
-function v1Analyze() {
-  var target = getV1Value('target');
-  var beforeVal = getV1Value('before');
-  var afterVal  = getV1Value('after');
-
-  var layerValues = {};
-  LAYERS_V1.forEach(function(l) { layerValues[l] = getLayerValue(l); });
-
-  var presentLayers = LAYERS_V1.filter(function(l) { return layerValues[l].length > 0; });
-  var missingLayersList = LAYERS_V1.filter(function(l) { return !layerValues[l].length; });
-  var count = presentLayers.length;
-
-  // Gauge
-  var pct = Math.round((count / 6) * 100);
-  $gaugeFill.style.width = pct + '%';
-  $gaugeFill.style.background = pct <= 33 ? '#E84040' : pct <= 66 ? '#F4A72A' : '#1DB87A';
-  $gaugeText.textContent = count + ' / 6';
-
-  if (missingLayersList.length > 0) {
-    $missingLayers.textContent = '不足レイヤー：' + missingLayersList.join('、');
-    $missingLayers.style.color = '#E84040';
-  } else {
-    $missingLayers.textContent = 'すべてのレイヤーが入力されています';
-    $missingLayers.style.color = '#1DB87A';
+  if (!entry) {
+    renderNotFound(section, query);
+    return;
   }
 
-  // Current state
-  var states = [];
-  if (!layerValues['I']) states.push('これはまだ情報の段階です');
-  if (!layerValues['M']) states.push('媒体が未設定です');
-  if (!layerValues['S']) states.push('構造が未設定です');
-  if (!layerValues['F']) states.push('押す力／動かす力が未設定です');
-  if (!layerValues['E']) states.push('エネルギーが未設定です');
-  if (!layerValues['T']) states.push('時間が未設定です');
-  $currentState.textContent = states.length === 0 ? '現象化に近いです' : states.join('\n');
+  const panel = document.createElement('div');
+  panel.className = 'result-panel';
+  panel.innerHTML = buildResultHTML(entry);
+  section.appendChild(panel);
 
-  // ΔI
-  if (!beforeVal || !afterVal) {
-    $deltaRead.textContent = 'ΔI はまだ未設定です。変化前と変化後を書くと、情報の変化が見えます。';
-  } else {
-    $deltaRead.textContent = '「' + beforeVal + '」から\n「' + afterVal + '」への変化を現象にしようとしています。';
-  }
-
-  // Phenomenon reading
-  var tLabel = target ? '「' + target + '」' : '〔対象未設定〕';
-  var lines = [tLabel + 'を現象にするために、'];
-  var lDefs = [
-    ['I', '情報'], ['M', '媒体'], ['S', '構造'], ['F', '力'], ['E', 'エネルギー'], ['T', '時間']
-  ];
-  var suffixes = ['を、', 'に乗せ、', 'として並べ、', 'で動かし、', 'のもとで、', 'に変化させようとしています。'];
-  lDefs.forEach(function(pair, i) {
-    var key = pair[0];
-    var name = pair[1];
-    var val = layerValues[key];
-    lines.push(name + (val ? '「' + val + '」' : '〔未設定〕') + suffixes[i]);
-  });
-  $phenomenonRead.textContent = lines.join('\n');
-
-  // Next step
-  var hints = {
-    I: '情報とは何か。どんな記録・感情・知識がこの現象に関わっているか。',
-    M: '情報をどの媒体に乗せるか。言葉か、身体か、空間か。',
-    S: '情報がどう並ぶと意味になるか。順序、対比、階層を考える。',
-    F: '何がこの情報を動かすか。何が押すか、何が重いか。',
-    E: '動かす余力はあるか。時間・体力・集中力・リソースを確認する。',
-    T: 'いつ変化するか。タイミング・期限・継続性を設定する。'
-  };
-  var layerNameMap = { I: '情報', M: '媒体', S: '構造', F: '力', E: 'エネルギー', T: '時間' };
-  if (missingLayersList.length === 0) {
-    $nextStep.textContent = '不足レイヤー：なし\n次に見る場所：ΔI（変化前・変化後）の精度を上げる。';
-  } else {
-    var next = missingLayersList[0];
-    $nextStep.textContent = '不足レイヤー：' + next + '（' + layerNameMap[next] + '）\n次に見る場所：' + hints[next];
-  }
-
-  // Save & show
-  saveV1ToStorage();
-  $v1ResultSection.classList.remove('hidden');
-  $v1ResultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-/* ══════════════════════════════════════════
-   v0.1 — コピー
-══════════════════════════════════════════ */
-
-function buildV1CopyText() {
-  var target = getV1Value('target') || '〔未設定〕';
-  var beforeVal = getV1Value('before') || '〔未設定〕';
-  var afterVal  = getV1Value('after')  || '〔未設定〕';
-  var layerValues = {};
-  LAYERS_V1.forEach(function(l) { layerValues[l] = getLayerValue(l) || '〔未設定〕'; });
-
-  var presentCount = LAYERS_V1.filter(function(l) { return getLayerValue(l).length > 0; }).length;
-  var missingList  = LAYERS_V1.filter(function(l) { return !getLayerValue(l).length; });
-  var layerNameMap = { I: '情報', M: '媒体', S: '構造', F: '力', E: 'エネルギー', T: '時間' };
-
-  return [
-    '── 現象化OS v0.1（手動分解）──',
-    '現象にしたいもの：' + target,
-    '',
-    '【現象化度】',
-    presentCount + ' / 6',
-    missingList.length > 0 ? '不足レイヤー：' + missingList.join('、') : 'すべてのレイヤーが入力されています',
-    '',
-    '【現在の状態】',
-    $currentState.textContent,
-    '',
-    '【ΔI の読み】',
-    $deltaRead.textContent,
-    '',
-    '【現象化の読み】',
-    $phenomenonRead.textContent,
-    '',
-    '【次の一手】',
-    $nextStep.textContent,
-    '',
-    '──────────────────',
-    '情報は、媒体・構造・力・エネルギー・時間を通って現象になる。'
-  ].join('\n');
-}
-
-/* ══════════════════════════════════════════
-   localStorage
-══════════════════════════════════════════ */
-
-function saveV2ToStorage(input) {
-  try {
-    localStorage.setItem(STORAGE_KEY_V2, JSON.stringify({ lastInput: input }));
-  } catch (_) {}
-}
-
-function loadV2FromStorage() {
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY_V2);
-    if (!raw) return;
-    var data = JSON.parse(raw);
-    if (data.lastInput && $v2Input) $v2Input.value = data.lastInput;
-  } catch (_) {}
-}
-
-function saveV1ToStorage() {
-  try {
-    var data = {
-      target: getV1Value('target'),
-      before: getV1Value('before'),
-      after:  getV1Value('after')
-    };
-    LAYERS_V1.forEach(function(l) { data['layer_' + l] = getLayerValue(l); });
-    localStorage.setItem(STORAGE_KEY_V1, JSON.stringify(data));
-  } catch (_) {}
-}
-
-function loadV1FromStorage() {
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY_V1);
-    if (!raw) return;
-    var data = JSON.parse(raw);
-    if (data.target && $target) $target.value = data.target;
-    if (data.before && $before) $before.value = data.before;
-    if (data.after  && $after)  $after.value  = data.after;
-    LAYERS_V1.forEach(function(l) {
-      var el = document.getElementById('layer-' + l);
-      if (el && data['layer_' + l]) el.value = data['layer_' + l];
+  // コピーボタン
+  const copyBtn = panel.querySelector('#copyBtn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function() {
+      copyResult(entry, copyBtn);
     });
-  } catch (_) {}
+  }
+
+  // スムーズスクロール
+  setTimeout(() => {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
 }
 
-/* ══════════════════════════════════════════
-   コピーユーティリティ
-══════════════════════════════════════════ */
+function buildResultHTML(entry) {
+  const layerKeys = ['I', 'M', 'S', 'F', 'E', 'T'];
 
-function copyText(text, btn) {
-  var orig = btn.textContent;
-  function onDone() {
-    btn.textContent = 'コピー済み ✓';
-    setTimeout(function() { btn.textContent = orig; }, 1800);
-  }
+  const layerCardsHTML = layerKeys.map(key => {
+    const meta = LAYER_META[key];
+    return `
+      <div class="layer-card ${meta.cls}">
+        <div class="layer-key">${key}<span class="layer-key-label">${meta.label}</span></div>
+        <div class="layer-val">${escHtml(entry.layers[key])}</div>
+      </div>
+    `;
+  }).join('');
+
+  const primTagsHTML = entry.primitives.map(p =>
+    `<span class="prim-tag">${escHtml(p)}</span>`
+  ).join('');
+
+  const scaleItemsHTML = entry.scales.map(s =>
+    `<li>${escHtml(s)}</li>`
+  ).join('');
+
+  return `
+    <!-- ヘッド -->
+    <div class="result-head">
+      <div class="result-word-row">
+        <span class="result-emoji">${entry.emoji}</span>
+        <span class="result-word">${escHtml(entry.word)}</span>
+      </div>
+      <div class="result-phenomenon-name">◈ ${escHtml(entry.phenomenonName)}</div>
+      <div class="result-definition">${escHtml(entry.definition)}</div>
+    </div>
+
+    <!-- 現象素 -->
+    <div class="primitives-row">
+      <div class="primitives-label">現象素 primitives</div>
+      ${primTagsHTML}
+    </div>
+
+    <!-- レイヤーカード -->
+    <div class="layers-grid">
+      ${layerCardsHTML}
+    </div>
+
+    <!-- ΔI -->
+    <div class="delta-block">
+      <div class="delta-label">ΔI — 差分情報</div>
+      <div class="delta-val">${escHtml(entry.deltaI)}</div>
+    </div>
+
+    <!-- スケール変換 -->
+    <div class="scale-block">
+      <div class="scale-label">スケール変換</div>
+      <ul class="scale-list">${scaleItemsHTML}</ul>
+    </div>
+
+    <!-- 仮説チェック -->
+    <div class="hyp-block">
+      <div class="hyp-label">仮説チェック</div>
+      <div class="hyp-val">${escHtml(entry.hypothesisCheck)}</div>
+    </div>
+
+    <!-- コピー -->
+    <div class="copy-row">
+      <button class="copy-btn" id="copyBtn" type="button">
+        <span>⎘</span><span>コピー</span>
+      </button>
+    </div>
+
+    <!-- 締め -->
+    <p class="result-footer-note">情報は、媒体・構造・力・エネルギー・時間を通って現象になる。</p>
+  `;
+}
+
+function renderNotFound(section, query) {
+  const panel = document.createElement('div');
+  panel.className = 'not-found-panel';
+  panel.innerHTML = `
+    <div class="not-found-icon">◌</div>
+    <div class="not-found-title">辞書にまだない現象です</div>
+    <div class="not-found-sub">
+      「${escHtml(query)}」はまだCore辞書に登録されていません。
+    </div>
+  `;
+  section.appendChild(panel);
+}
+
+/* ─── コピー機能 ─────────────────────────────────── */
+function buildCopyText(entry) {
+  const layerKeys = ['I', 'M', 'S', 'F', 'E', 'T'];
+  const layerLines = layerKeys.map(key =>
+    `${key} ${LAYER_META[key].label}：\n${entry.layers[key]}`
+  ).join('\n\n');
+
+  const scaleLines = entry.scales.map(s => `  → ${s}`).join('\n');
+
+  return `── 現象化OS Core β ──
+
+日常語：
+${entry.word}
+
+現象名：
+${entry.phenomenonName}
+
+現象定義：
+${entry.definition}
+
+使われている現象素：
+${entry.primitives.join(' / ')}
+
+${layerLines}
+
+ΔI：
+${entry.deltaI}
+
+スケール変換：
+${scaleLines}
+
+仮説チェック：
+${entry.hypothesisCheck}
+
+情報は、媒体・構造・力・エネルギー・時間を通って現象になる。`;
+}
+
+function copyResult(entry, btn) {
+  const text = buildCopyText(entry);
+
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(onDone).catch(function() { fallbackCopy(text, onDone); });
+    navigator.clipboard.writeText(text).then(() => {
+      showCopied(btn);
+    }).catch(() => {
+      fallbackCopy(text, btn);
+    });
   } else {
-    fallbackCopy(text, onDone);
+    fallbackCopy(text, btn);
   }
 }
 
-function fallbackCopy(text, onDone) {
-  var el = document.createElement('textarea');
-  el.value = text;
-  el.style.position = 'fixed';
-  el.style.opacity = '0';
-  document.body.appendChild(el);
-  el.select();
-  try { document.execCommand('copy'); if (onDone) onDone(); } catch (_) {}
-  document.body.removeChild(el);
+function fallbackCopy(text, btn) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  ta.style.top = '0';
+  ta.style.left = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showCopied(btn);
+  } catch (_) {}
+  document.body.removeChild(ta);
 }
 
-/* ══════════════════════════════════════════
-   HTMLエスケープ
-══════════════════════════════════════════ */
+function showCopied(btn) {
+  if (!btn) return;
+  btn.classList.add('copied');
+  const spanEl = btn.querySelectorAll('span')[1];
+  if (spanEl) {
+    spanEl.textContent = 'コピーしました';
+    setTimeout(() => {
+      spanEl.textContent = 'コピー';
+      btn.classList.remove('copied');
+    }, 2000);
+  }
+}
 
-function escapeHtml(str) {
-  return String(str)
+/* ─── ユーティリティ ─────────────────────────────── */
+function escHtml(str) {
+  if (typeof str !== 'string') return '';
+  return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
-/* ══════════════════════════════════════════
-   v0.1 — リセット
-══════════════════════════════════════════ */
+/* ─── 初期化 ─────────────────────────────────────── */
+function init() {
+  const input = document.getElementById('wordInput');
+  if (!input) return;
 
-function v1Reset() {
-  var ok = window.confirm('手動フォームの入力をリセットしますか？');
-  if (!ok) return;
-  if ($target) $target.value = '';
-  if ($before) $before.value = '';
-  if ($after)  $after.value  = '';
-  LAYERS_V1.forEach(function(l) {
-    var el = document.getElementById('layer-' + l);
-    if (el) el.value = '';
-  });
-  try { localStorage.removeItem(STORAGE_KEY_V1); } catch (_) {}
-  if ($v1ResultSection) $v1ResultSection.classList.add('hidden');
-  if ($gaugeFill) { $gaugeFill.style.width = '0%'; }
-  if ($missingLayers) { $missingLayers.style.color = ''; }
-}
+  // 前回の入力を復元
+  const last = loadLastWord();
+  if (last) input.value = last;
 
-/* ══════════════════════════════════════════
-   イベントバインド
-══════════════════════════════════════════ */
-
-// v0.2 analyze
-if ($btnV2Analyze) {
-  $btnV2Analyze.addEventListener('click', v2Analyze);
-}
-
-if ($v2Input) {
-  $v2Input.addEventListener('keydown', function(e) {
+  // Enter キー
+  input.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
-      v2Analyze();
+      observe();
     }
   });
 }
 
-// chips
-document.querySelectorAll('.chip').forEach(function(chip) {
-  chip.addEventListener('click', function() {
-    var id = chip.getAttribute('data-id');
-    var text = chipRepresentatives[id];
-    if (!text || !$v2Input) return;
-    $v2Input.value = text;
-
-    // visual feedback
-    document.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('chip--active'); });
-    chip.classList.add('chip--active');
-    setTimeout(function() { chip.classList.remove('chip--active'); }, 600);
-
-    // find entry by id directly
-    var entry = phenomenonDictionary.find(function(e) { return e.id === id; });
-    if (entry) {
-      saveV2ToStorage(text);
-      renderV2Result(entry, text, [entry]);
-    }
-  });
-});
-
-// v0.2 copy
-if ($btnV2Copy) {
-  $btnV2Copy.addEventListener('click', function() {
-    copyText(buildV2CopyText(), $btnV2Copy);
-  });
+// DOM読み込み後に初期化
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
 }
-
-// open manual form
-if ($btnOpenManual) {
-  $btnOpenManual.addEventListener('click', function() {
-    if ($v1Section) {
-      $v1Section.classList.remove('hidden');
-      $v1Section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
-}
-
-// close v1
-if ($btnCloseV1) {
-  $btnCloseV1.addEventListener('click', function() {
-    if ($v1Section) $v1Section.classList.add('hidden');
-  });
-}
-
-// v0.1 analyze
-if ($btnV1Analyze) {
-  $btnV1Analyze.addEventListener('click', v1Analyze);
-}
-
-// v0.1 reset
-if ($btnV1Reset) {
-  $btnV1Reset.addEventListener('click', v1Reset);
-}
-
-// v0.1 copy
-if ($btnV1Copy) {
-  $btnV1Copy.addEventListener('click', function() {
-    copyText(buildV1CopyText(), $btnV1Copy);
-  });
-}
-
-// v0.1 auto-save on input
-document.querySelectorAll('#v1-section textarea').forEach(function(el) {
-  el.addEventListener('input', saveV1ToStorage);
-});
-
-/* ══════════════════════════════════════════
-   初期化
-══════════════════════════════════════════ */
-
-loadV2FromStorage();
-loadV1FromStorage();
