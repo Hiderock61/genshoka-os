@@ -285,6 +285,7 @@ const LAYER_META = {
 
 /* ─── 状態 ────────────────────────────────────────── */
 let currentEntry = null;
+let currentCompareData = null;
 
 /* ─── localStorage ───────────────────────────────── */
 const LS_KEY = 'phenCore_lastWord';
@@ -570,6 +571,9 @@ function init() {
       observe();
     }
   });
+
+  // 比較モードのセレクトを初期化
+  populateCompareOptions();
 }
 
 // DOM読み込み後に初期化
@@ -577,4 +581,204 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
   init();
+}
+
+/* ══════════════════════════════════════════════════
+   v0.3 比較モード（既存機能には触れず、追加のみ）
+   ══════════════════════════════════════════════════ */
+
+/* ─── セレクト初期化 ──────────────────────────────── */
+function populateCompareOptions() {
+  const selA = document.getElementById('compareSelectA');
+  const selB = document.getElementById('compareSelectB');
+  if (!selA || !selB) return;
+
+  const optionsHTML = phenomenonCoreDictionary.map(e =>
+    `<option value="${e.id}">${e.emoji} ${escHtml(e.word)}</option>`
+  ).join('');
+
+  selA.innerHTML = optionsHTML;
+  selB.innerHTML = optionsHTML;
+
+  // デフォルトは異なる2項目（辞書に2件以上ある場合）
+  selA.value = phenomenonCoreDictionary[0] ? phenomenonCoreDictionary[0].id : '';
+  selB.value = phenomenonCoreDictionary[1] ? phenomenonCoreDictionary[1].id : selA.value;
+}
+
+/* ─── 現象素の比較ロジック ────────────────────────── */
+function findCommonPrimitives(entryA, entryB) {
+  return entryA.primitives.filter(p => entryB.primitives.includes(p));
+}
+
+function findOnlyPrimitives(entryA, entryB) {
+  return entryA.primitives.filter(p => !entryB.primitives.includes(p));
+}
+
+/* ─── 比較コメント（テンプレート文、外部AIなし） ──── */
+function buildCompareComment(entryA, entryB, common) {
+  const totalUnique = new Set([...entryA.primitives, ...entryB.primitives]).size;
+  const ratio = totalUnique > 0 ? common.length / totalUnique : 0;
+
+  if (common.length === 0) {
+    return `「${entryA.word}」と「${entryB.word}」は、共通する現象素を持たず、構造的にかなり異なる現象として観測される。`;
+  }
+  if (ratio >= 0.4) {
+    return `「${entryA.word}」と「${entryB.word}」は、${common.length}個の現象素（${common.join('・')}）を共有しており、構造的に近い現象として観測される。`;
+  }
+  return `「${entryA.word}」と「${entryB.word}」は、一部の現象素（${common.join('・')}）を共有しつつも、それぞれ固有の構造を持つ現象として観測される。`;
+}
+
+/* ─── 比較メイン関数 ──────────────────────────────── */
+function compareEntries() {
+  const selA = document.getElementById('compareSelectA');
+  const selB = document.getElementById('compareSelectB');
+  if (!selA || !selB) return;
+
+  const entryA = phenomenonCoreDictionary.find(e => e.id === selA.value);
+  const entryB = phenomenonCoreDictionary.find(e => e.id === selB.value);
+  if (!entryA || !entryB) return;
+
+  renderComparison(entryA, entryB);
+}
+
+/* ─── 比較結果HTML描画 ────────────────────────────── */
+function renderComparison(entryA, entryB) {
+  const section = document.getElementById('compareResultSection');
+  if (!section) return;
+
+  const common = findCommonPrimitives(entryA, entryB);
+  const onlyA = findOnlyPrimitives(entryA, entryB);
+  const onlyB = findOnlyPrimitives(entryB, entryA);
+  const comment = buildCompareComment(entryA, entryB, common);
+
+  currentCompareData = { entryA, entryB, common, onlyA, onlyB, comment };
+
+  const layerKeys = ['I', 'M', 'S', 'F', 'E', 'T'];
+  const layerRowsHTML = layerKeys.map(key => {
+    const meta = LAYER_META[key];
+    return `
+      <div class="compare-layer-row">
+        <div class="compare-layer-label">${key}<span class="compare-layer-label-sub">${meta.label}</span></div>
+        <div class="compare-layer-cols">
+          <div class="compare-layer-col compare-layer-col--a">
+            <span class="compare-layer-tag compare-layer-tag--a">A</span>
+            <span class="compare-layer-text">${escHtml(entryA.layers[key])}</span>
+          </div>
+          <div class="compare-layer-col compare-layer-col--b">
+            <span class="compare-layer-tag compare-layer-tag--b">B</span>
+            <span class="compare-layer-text">${escHtml(entryB.layers[key])}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const commonTagsHTML = common.length
+    ? common.map(p => `<span class="prim-tag prim-tag--common">${escHtml(p)}</span>`).join('')
+    : `<span class="compare-empty-note">なし</span>`;
+
+  const onlyATagsHTML = onlyA.length
+    ? onlyA.map(p => `<span class="prim-tag prim-tag--a">${escHtml(p)}</span>`).join('')
+    : `<span class="compare-empty-note">なし</span>`;
+
+  const onlyBTagsHTML = onlyB.length
+    ? onlyB.map(p => `<span class="prim-tag prim-tag--b">${escHtml(p)}</span>`).join('')
+    : `<span class="compare-empty-note">なし</span>`;
+
+  section.innerHTML = `
+    <div class="scan-bar"></div>
+    <div class="compare-result-panel">
+      <div class="result-head compare-result-head">
+        <div class="compare-title">
+          <span class="result-emoji">${entryA.emoji}</span>
+          <span class="result-word">${escHtml(entryA.word)}</span>
+          <span class="compare-vs-inline">×</span>
+          <span class="result-emoji">${entryB.emoji}</span>
+          <span class="result-word">${escHtml(entryB.word)}</span>
+        </div>
+      </div>
+
+      <div class="compare-primitives-row">
+        <div class="primitives-label">共通する現象素</div>
+        ${commonTagsHTML}
+      </div>
+      <div class="compare-primitives-row">
+        <div class="primitives-label">Aだけの現象素（${escHtml(entryA.word)}）</div>
+        ${onlyATagsHTML}
+      </div>
+      <div class="compare-primitives-row">
+        <div class="primitives-label">Bだけの現象素（${escHtml(entryB.word)}）</div>
+        ${onlyBTagsHTML}
+      </div>
+
+      <div class="compare-layer-grid">
+        ${layerRowsHTML}
+      </div>
+
+      <div class="hyp-block">
+        <div class="hyp-label">比較コメント</div>
+        <div class="hyp-val">${escHtml(comment)}</div>
+      </div>
+
+      <div class="compare-copy-row">
+        <button class="copy-btn" id="compareCopyBtn" type="button">
+          <span>⎘</span><span>比較結果をコピー</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  const copyBtn = section.querySelector('#compareCopyBtn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function() {
+      copyCompareResult(copyBtn);
+    });
+  }
+
+  setTimeout(() => {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
+}
+
+/* ─── 比較結果コピー機能 ──────────────────────────── */
+function buildCompareCopyText(entryA, entryB, common, onlyA, onlyB, comment) {
+  const layerKeys = ['I', 'M', 'S', 'F', 'E', 'T'];
+  const layerLines = layerKeys.map(key =>
+    `${key} ${LAYER_META[key].label}：\nA（${entryA.word}）：${entryA.layers[key]}\nB（${entryB.word}）：${entryB.layers[key]}`
+  ).join('\n\n');
+
+  return `── 現象化OS Core β 比較モード ──
+
+比較：
+${entryA.word} × ${entryB.word}
+
+共通する現象素：
+${common.length ? common.join(' / ') : 'なし'}
+
+Aだけの現象素（${entryA.word}）：
+${onlyA.length ? onlyA.join(' / ') : 'なし'}
+
+Bだけの現象素（${entryB.word}）：
+${onlyB.length ? onlyB.join(' / ') : 'なし'}
+
+${layerLines}
+
+比較コメント：
+${comment}`;
+}
+
+function copyCompareResult(btn) {
+  if (!currentCompareData) return;
+  const { entryA, entryB, common, onlyA, onlyB, comment } = currentCompareData;
+  const text = buildCompareCopyText(entryA, entryB, common, onlyA, onlyB, comment);
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showCopied(btn);
+    }).catch(() => {
+      fallbackCopy(text, btn);
+    });
+  } else {
+    fallbackCopy(text, btn);
+  }
 }

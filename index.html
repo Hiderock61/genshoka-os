@@ -73,6 +73,23 @@
       <!-- 結果はJSで描画 -->
     </section>
 
+    <section class="compare-section">
+      <label class="input-label">2つの現象を比較する</label>
+      <div class="compare-controls">
+        <select id="compareSelectA" class="compare-select" aria-label="現象A"></select>
+        <span class="compare-vs">×</span>
+        <select id="compareSelectB" class="compare-select" aria-label="現象B"></select>
+      </div>
+      <button class="observe-btn compare-btn" id="compareBtn" onclick="compareEntries()">
+        <span class="btn-icon">⇄</span>
+        <span class="btn-text">比較する</span>
+      </button>
+    </section>
+
+    <section class="compare-result-section" id="compareResultSection" aria-live="polite">
+      <!-- 比較結果はJSで描画 -->
+    </section>
+
   </main>
 
   <footer class="footer">
