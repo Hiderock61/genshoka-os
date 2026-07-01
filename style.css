@@ -658,34 +658,68 @@ body {
   border-bottom: 1px solid var(--border-dim);
 }
 
+.compare-intro {
+  font-size: 12px;
+  color: #5c6e8c;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
 .compare-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  gap: 8px;
   margin-bottom: 14px;
 }
 
-.compare-select {
-  flex: 1;
+.compare-field {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+  padding: 8px 10px 9px;
+  min-width: 0;
+}
+
+.compare-field-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.compare-select {
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  border: none;
   color: var(--text-bright);
   font-family: var(--mono);
   font-size: 13px;
-  padding: 9px 10px;
+  padding: 0;
   outline: none;
   -webkit-appearance: none;
 }
 
-.compare-select:focus {
+.compare-field:focus-within {
   border-color: var(--accent-dim);
   box-shadow: 0 0 0 2px rgba(29,255,171,0.1);
 }
 
+.compare-vs-wrap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 9px;
+}
+
 .compare-vs {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--text-dim);
   flex-shrink: 0;
 }
@@ -707,6 +741,15 @@ body {
   border-radius: var(--radius) var(--radius) 0 0;
 }
 
+.compare-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
 .compare-title {
   display: flex;
   align-items: baseline;
@@ -719,6 +762,13 @@ body {
   font-size: 16px;
   color: var(--text-dim);
   margin: 0 2px;
+}
+
+.compare-result-intro {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.65;
+  margin-top: 10px;
 }
 
 .compare-primitives-row {
@@ -867,12 +917,15 @@ body {
   }
 
   .compare-controls {
-    flex-direction: column;
-    align-items: stretch;
+    gap: 6px;
   }
 
-  .compare-vs {
-    text-align: center;
+  .compare-field {
+    padding: 7px 8px 8px;
+  }
+
+  .compare-vs-wrap {
+    padding: 0 1px 9px;
   }
 
   .compare-layer-cols {
