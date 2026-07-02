@@ -75,27 +75,21 @@
 
     <section class="compare-section">
       <label class="input-label">2つの現象を比較する</label>
-      <p class="compare-intro">2つの現象を選ぶと、共通する現象素とIMSFETの違いを観測できます。</p>
-
+      <p class="compare-desc">2つの言葉を選ぶと、現象素とIMSFETの構造を並べて観測します。</p>
       <div class="compare-controls">
-        <div class="compare-field compare-field--a">
-          <label class="compare-field-label" for="compareSelectA">現象A</label>
+        <div class="compare-card compare-card--a">
+          <span class="compare-card-label compare-card-label--a">現象A</span>
           <select id="compareSelectA" class="compare-select" aria-label="現象A"></select>
         </div>
-
-        <div class="compare-vs-wrap" aria-hidden="true">
-          <span class="compare-vs">×</span>
-        </div>
-
-        <div class="compare-field compare-field--b">
-          <label class="compare-field-label" for="compareSelectB">現象B</label>
+        <span class="compare-vs" aria-hidden="true">×</span>
+        <div class="compare-card compare-card--b">
+          <span class="compare-card-label compare-card-label--b">現象B</span>
           <select id="compareSelectB" class="compare-select" aria-label="現象B"></select>
         </div>
       </div>
-
       <button class="observe-btn compare-btn" id="compareBtn" onclick="compareEntries()">
         <span class="btn-icon">⇄</span>
-        <span class="btn-text">比較する</span>
+        <span class="btn-text">この2つを比較する</span>
       </button>
     </section>
 

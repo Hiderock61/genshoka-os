@@ -658,16 +658,59 @@ body {
   border-bottom: 1px solid var(--border-dim);
 }
 
+.compare-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
 .compare-controls {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 10px;
   margin-bottom: 14px;
 }
 
-.compare-select {
+.compare-card {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
   background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 10px 9px;
+}
+
+.compare-card--a {
+  border-left: 2px solid rgba(79,195,247,0.4);
+}
+
+.compare-card--b {
+  border-left: 2px solid rgba(255,179,0,0.4);
+}
+
+.compare-card-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.compare-card-label--a {
+  color: var(--blue-hi);
+}
+
+.compare-card-label--b {
+  color: var(--amber);
+}
+
+.compare-select {
+  width: 100%;
+  background: var(--bg-hover);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text-bright);
@@ -684,10 +727,20 @@ body {
 }
 
 .compare-vs {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--text-dim);
+  align-self: center;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-top: 15px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
 }
 
 .compare-btn {
@@ -707,11 +760,27 @@ body {
   border-radius: var(--radius) var(--radius) 0 0;
 }
 
+.compare-result-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
 .compare-title {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 6px 8px;
+}
+
+.compare-result-intro {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-top: 8px;
 }
 
 .compare-vs-inline {
@@ -872,7 +941,7 @@ body {
   }
 
   .compare-vs {
-    text-align: center;
+    margin: 2px auto;
   }
 
   .compare-layer-cols {

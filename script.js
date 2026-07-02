@@ -689,7 +689,7 @@ function renderComparison(entryA, entryB) {
     <div class="scan-bar"></div>
     <div class="compare-result-panel">
       <div class="result-head compare-result-head">
-        <div class="compare-eyebrow">比較観測</div>
+        <div class="compare-result-label">比較結果</div>
         <div class="compare-title">
           <span class="result-emoji">${entryA.emoji}</span>
           <span class="result-word">${escHtml(entryA.word)}</span>
@@ -697,7 +697,7 @@ function renderComparison(entryA, entryB) {
           <span class="result-emoji">${entryB.emoji}</span>
           <span class="result-word">${escHtml(entryB.word)}</span>
         </div>
-        <p class="compare-result-intro">この2つの現象を、共通する現象素とIMSFETレイヤーで比較します。</p>
+        <p class="compare-result-intro">「${escHtml(entryA.word)}」と「${escHtml(entryB.word)}」を、現象素とIMSFETの6レイヤーで比較します。</p>
       </div>
 
       <div class="compare-primitives-row">
