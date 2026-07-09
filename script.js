@@ -451,6 +451,8 @@ function buildResultHTML(entry) {
 }
 
 function renderNotFound(section, query) {
+  resetHypothesisState();
+
   const panel = document.createElement('div');
   panel.className = 'not-found-panel';
   panel.innerHTML = `
@@ -459,8 +461,20 @@ function renderNotFound(section, query) {
     <div class="not-found-sub">
       「${escHtml(query)}」はまだCore辞書に登録されていません。
     </div>
+    <div class="hypothesis-entry" id="hypothesisEntry">
+      <p class="hypothesis-entry-prompt">この言葉を、現象素から仮説化しますか？</p>
+      <button type="button" class="hypothesis-open-btn" id="hypothesisOpenBtn">仮説モードを開く</button>
+    </div>
+    <div class="hypothesis-mode-container" id="hypothesisModeContainer" aria-live="polite"></div>
   `;
   section.appendChild(panel);
+
+  const openBtn = panel.querySelector('#hypothesisOpenBtn');
+  if (openBtn) {
+    openBtn.addEventListener('click', function() {
+      openHypothesisMode(query);
+    });
+  }
 }
 
 /* ─── コピー機能 ─────────────────────────────────── */
@@ -900,4 +914,233 @@ function initPrimitiveReverseLookup() {
 
   renderPrimitiveTags();
   panel.innerHTML = `<p class="primitive-waiting">現象素タグを選んで、世界をスキャンしてください。</p>`;
+}
+
+/* ══════════════════════════════════════════════════
+   v0.5 未登録語の仮説観測（既存機能には触れず、追加のみ）
+   仮説は作る。辞書には入れない。保存もしない。
+   ══════════════════════════════════════════════════ */
+
+/* ─── 状態（リロードで消えてよい・localStorage不使用） ── */
+let currentHypothesisDraft = null;
+
+function resetHypothesisState() {
+  currentHypothesisDraft = null;
+}
+
+/* ─── 仮説モードを開く ────────────────────────────── */
+function openHypothesisMode(query) {
+  currentHypothesisDraft = { word: query, primitives: [], memo: '' };
+
+  const entry = document.getElementById('hypothesisEntry');
+  if (entry) entry.style.display = 'none';
+
+  renderHypothesisMode();
+}
+
+/* ─── 仮説モード本体の描画 ────────────────────────── */
+function renderHypothesisMode() {
+  const container = document.getElementById('hypothesisModeContainer');
+  if (!container || !currentHypothesisDraft) return;
+
+  container.innerHTML = '';
+
+  const panel = document.createElement('div');
+  panel.className = 'hypothesis-mode-panel';
+
+  // 見出し
+  const header = document.createElement('div');
+  header.className = 'hypothesis-mode-header';
+
+  const title = document.createElement('span');
+  title.className = 'hypothesis-mode-title';
+  title.textContent = '未登録語の仮説観測';
+
+  const badge = document.createElement('span');
+  badge.className = 'hypothesis-mode-badge';
+  badge.textContent = 'AD-HOC MODE';
+
+  header.appendChild(title);
+  header.appendChild(badge);
+  panel.appendChild(header);
+
+  // 対象語（ユーザー入力そのものなので textContent で描画）
+  const targetRow = document.createElement('div');
+  targetRow.className = 'hypothesis-target-row';
+
+  const targetLabel = document.createElement('span');
+  targetLabel.className = 'hypothesis-target-label';
+  targetLabel.textContent = '未登録語：';
+
+  const targetWord = document.createElement('span');
+  targetWord.className = 'hypothesis-target-word';
+  targetWord.textContent = currentHypothesisDraft.word;
+
+  targetRow.appendChild(targetLabel);
+  targetRow.appendChild(targetWord);
+  panel.appendChild(targetRow);
+
+  // 現象素チップ（複数選択・collectPrimitives()を再利用）
+  const chipsLabel = document.createElement('div');
+  chipsLabel.className = 'hypothesis-chips-label';
+  chipsLabel.textContent = '近そうな現象素を選ぶ（複数選択可）';
+  panel.appendChild(chipsLabel);
+
+  const chipsWrap = document.createElement('div');
+  chipsWrap.className = 'hypothesis-chips';
+  chipsWrap.id = 'hypothesisChips';
+  chipsWrap.setAttribute('aria-label', '仮説用 現象素タグ');
+  panel.appendChild(chipsWrap);
+
+  // 仮説メモ
+  const memoLabel = document.createElement('div');
+  memoLabel.className = 'hypothesis-memo-label';
+  memoLabel.textContent = '仮説メモ：この現象は、何がどう変わる現象か？';
+  panel.appendChild(memoLabel);
+
+  const memoInput = document.createElement('textarea');
+  memoInput.className = 'hypothesis-memo-input';
+  memoInput.id = 'hypothesisMemoInput';
+  memoInput.rows = 3;
+  memoInput.maxLength = 200;
+  memoInput.placeholder = '（空欄のまま仮説カードを作ってもOK）';
+  panel.appendChild(memoInput);
+
+  // カード描画先（ボタンより先にDOMへ置き、クロージャで安全に参照する）
+  const cardWrap = document.createElement('div');
+  cardWrap.className = 'hypothesis-card-container';
+  cardWrap.id = 'hypothesisCardContainer';
+  cardWrap.setAttribute('aria-live', 'polite');
+
+  // 作成ボタン
+  const buildBtn = document.createElement('button');
+  buildBtn.type = 'button';
+  buildBtn.className = 'hypothesis-build-btn';
+  buildBtn.id = 'hypothesisBuildBtn';
+  buildBtn.textContent = '仮説カードを作る';
+  buildBtn.disabled = currentHypothesisDraft.primitives.length === 0;
+  buildBtn.addEventListener('click', function() {
+    buildHypothesisCard(memoInput.value);
+  });
+  panel.appendChild(buildBtn);
+
+  panel.appendChild(cardWrap);
+  container.appendChild(panel);
+
+  renderHypothesisPrimitiveChips();
+}
+
+/* ─── 現象素チップの描画（複数選択・v0.4のcollectPrimitivesを再利用） ── */
+function renderHypothesisPrimitiveChips() {
+  const wrap = document.getElementById('hypothesisChips');
+  if (!wrap || !currentHypothesisDraft) return;
+
+  const primitives = collectPrimitives();
+
+  wrap.innerHTML = '';
+  primitives.forEach(p => {
+    const isActive = currentHypothesisDraft.primitives.includes(p);
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'hypothesis-chip' + (isActive ? ' hypothesis-chip-active' : '');
+    chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    chip.textContent = p;
+    chip.addEventListener('click', function() {
+      toggleHypothesisPrimitive(p);
+    });
+    wrap.appendChild(chip);
+  });
+}
+
+/* ─── 現象素の複数選択トグル ──────────────────────── */
+function toggleHypothesisPrimitive(primitive) {
+  if (!currentHypothesisDraft) return;
+
+  const idx = currentHypothesisDraft.primitives.indexOf(primitive);
+  if (idx === -1) {
+    currentHypothesisDraft.primitives.push(primitive);
+  } else {
+    currentHypothesisDraft.primitives.splice(idx, 1);
+  }
+
+  renderHypothesisPrimitiveChips();
+
+  const buildBtn = document.getElementById('hypothesisBuildBtn');
+  if (buildBtn) {
+    buildBtn.disabled = currentHypothesisDraft.primitives.length === 0;
+  }
+}
+
+/* ─── 仮説カードを作る（辞書には登録しない・保存しない） ── */
+function buildHypothesisCard(memoText) {
+  if (!currentHypothesisDraft) return;
+  if (currentHypothesisDraft.primitives.length === 0) return;
+
+  currentHypothesisDraft.memo = (memoText || '').trim();
+
+  renderHypothesisCard();
+}
+
+/* ─── 仮説カードの描画（ユーザー入力は必ずtextContent） ── */
+function renderHypothesisCard() {
+  const cardWrap = document.getElementById('hypothesisCardContainer');
+  if (!cardWrap || !currentHypothesisDraft) return;
+
+  cardWrap.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.className = 'hypothesis-card';
+
+  const status = document.createElement('div');
+  status.className = 'hypothesis-card-status';
+  status.textContent = 'STATUS: HYPOTHESIS ／ 暫定仮説';
+  card.appendChild(status);
+
+  const wordEl = document.createElement('div');
+  wordEl.className = 'hypothesis-card-word';
+  wordEl.textContent = currentHypothesisDraft.word;
+  card.appendChild(wordEl);
+
+  const sub = document.createElement('div');
+  sub.className = 'hypothesis-card-sub';
+  sub.textContent = '未登録語の仮説メモ';
+  card.appendChild(sub);
+
+  const primLabel = document.createElement('div');
+  primLabel.className = 'hypothesis-card-primitives-label';
+  primLabel.textContent = '選んだ現象素：';
+  card.appendChild(primLabel);
+
+  const primRow = document.createElement('div');
+  primRow.className = 'hypothesis-card-primitives';
+  currentHypothesisDraft.primitives.forEach(p => {
+    const tag = document.createElement('span');
+    tag.className = 'hypothesis-card-tag';
+    tag.textContent = p;
+    primRow.appendChild(tag);
+  });
+  card.appendChild(primRow);
+
+  const memoLabel = document.createElement('div');
+  memoLabel.className = 'hypothesis-card-memo-label';
+  memoLabel.textContent = '仮説メモ：';
+  card.appendChild(memoLabel);
+
+  const memoVal = document.createElement('div');
+  memoVal.className = 'hypothesis-card-memo';
+  memoVal.textContent = currentHypothesisDraft.memo
+    ? currentHypothesisDraft.memo
+    : 'まだ言語化されていません。';
+  card.appendChild(memoVal);
+
+  const disclaimer = document.createElement('p');
+  disclaimer.className = 'hypothesis-card-disclaimer';
+  disclaimer.textContent = '※これはCore辞書への正式登録ではありません。';
+  card.appendChild(disclaimer);
+
+  cardWrap.appendChild(card);
+
+  setTimeout(() => {
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 80);
 }
