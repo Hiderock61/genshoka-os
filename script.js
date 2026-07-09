@@ -574,6 +574,9 @@ function init() {
 
   // 比較モードのセレクトを初期化
   populateCompareOptions();
+
+  // 現象素から世界を見る（v0.4）を初期化
+  initPrimitiveReverseLookup();
 }
 
 // DOM読み込み後に初期化
@@ -783,4 +786,118 @@ function copyCompareResult(btn) {
   } else {
     fallbackCopy(text, btn);
   }
+}
+
+/* ══════════════════════════════════════════════════
+   v0.4 現象素から世界を見る（既存機能には触れず、追加のみ）
+   ══════════════════════════════════════════════════ */
+
+/* ─── 状態 ────────────────────────────────────────── */
+let selectedPrimitive = null;
+
+/* ─── 現象素の収集（配列前提・重複除去） ──────────── */
+function collectPrimitives() {
+  const list = [];
+  phenomenonCoreDictionary.forEach(entry => {
+    if (!entry || !Array.isArray(entry.primitives)) return;
+    entry.primitives.forEach(p => {
+      if (list.indexOf(p) === -1) list.push(p);
+    });
+  });
+  return list;
+}
+
+/* ─── 現象素タグ描画（単一選択） ──────────────────── */
+function renderPrimitiveTags() {
+  const wrap = document.getElementById('primitiveTags');
+  if (!wrap) return;
+
+  const primitives = collectPrimitives();
+
+  wrap.innerHTML = primitives.map(p => {
+    const isActive = p === selectedPrimitive;
+    return `<button type="button" class="primitive-chip${isActive ? ' primitive-chip-active' : ''}" data-primitive="${escHtml(p)}" aria-pressed="${isActive ? 'true' : 'false'}">${escHtml(p)}</button>`;
+  }).join('');
+
+  wrap.querySelectorAll('.primitive-chip').forEach(btn => {
+    btn.addEventListener('click', function() {
+      selectedPrimitive = btn.getAttribute('data-primitive');
+      renderPrimitiveTags();
+      renderPrimitiveResults(selectedPrimitive);
+    });
+  });
+}
+
+/* ─── 現象素からの逆引き検索（配列前提） ──────────── */
+function reverseLookupByPrimitive(primitive) {
+  const hits = [];
+  phenomenonCoreDictionary.forEach(entry => {
+    if (!entry || !Array.isArray(entry.primitives)) return;
+    if (entry.primitives.includes(primitive)) hits.push(entry);
+  });
+  return hits;
+}
+
+/* ─── 逆引き結果の描画 ────────────────────────────── */
+function renderPrimitiveResults(primitive) {
+  const panel = document.getElementById('primitiveResultPanel');
+  if (!panel) return;
+
+  const hits = reverseLookupByPrimitive(primitive);
+
+  const headerHTML = `
+    <div class="primitive-result-header">
+      <span>現象素：${escHtml(primitive)}</span>
+      <span class="primitive-hit-count">該当：${hits.length}件</span>
+    </div>
+  `;
+
+  if (hits.length === 0) {
+    panel.innerHTML = `
+      ${headerHTML}
+      <p class="primitive-waiting">この現象素を含む現象は、まだCore辞書にありません。</p>
+    `;
+    return;
+  }
+
+  const cardsHTML = hits.map(entry => `
+    <div class="primitive-result-card">
+      <div class="primitive-result-title">
+        <span class="result-emoji">${entry.emoji}</span>
+        <span class="primitive-result-name">${escHtml(entry.word)}</span>
+      </div>
+      <div class="result-phenomenon-name">◈ ${escHtml(entry.phenomenonName)}</div>
+      <div class="primitive-result-definition">${escHtml(entry.definition)}</div>
+      <button type="button" class="primitive-observe-btn" data-word="${escHtml(entry.word)}">
+        <span>◉</span><span>この現象を観測する</span>
+      </button>
+    </div>
+  `).join('');
+
+  panel.innerHTML = `${headerHTML}${cardsHTML}`;
+
+  panel.querySelectorAll('.primitive-observe-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      observeFromPrimitiveResult(btn.getAttribute('data-word'));
+    });
+  });
+}
+
+/* ─── 結果カードから単体観測へ ────────────────────── */
+function observeFromPrimitiveResult(word) {
+  if (typeof quickObserve === 'function') {
+    quickObserve(word);
+  } else {
+    console.warn('quickObserve is not defined');
+  }
+}
+
+/* ─── 初期化 ──────────────────────────────────────── */
+function initPrimitiveReverseLookup() {
+  const tagsWrap = document.getElementById('primitiveTags');
+  const panel = document.getElementById('primitiveResultPanel');
+  if (!tagsWrap || !panel) return;
+
+  renderPrimitiveTags();
+  panel.innerHTML = `<p class="primitive-waiting">現象素タグを選んで、世界をスキャンしてください。</p>`;
 }
