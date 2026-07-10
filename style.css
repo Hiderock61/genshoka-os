@@ -7,25 +7,35 @@
 
 :root {
   --bg:         #0a0c14;
-  --bg-panel:   #0f1220;
-  --bg-card:    #141828;
-  --bg-hover:   #1a2035;
-  --border:     #1e2840;
-  --border-dim: #151c2e;
+  --bg-panel:   #121627;
+  --bg-card:    #1a2039;
+  --bg-hover:   #222b49;
+  --border:     #2a3557;
+  --border-dim: #1c2440;
 
-  --accent:     #1dffab;
-  --accent-dim: #14d88c;
+  /* メインアクセント（緑）：主要ボタン・重要見出しのみに限定 */
+  --accent:     #22e6a0;
+  --accent-dim: #17bd7d;
+
+  /* 役割別サブカラー：定義=黄／構造情報=水色／比較モード=紫／仮説=赤／IMSFET装飾=桃・橙 */
   --amber:      #ffb300;
   --amber-dim:  #cc8f00;
   --blue-hi:    #4fc3f7;
+  --blue-dim:   #2e9fd6;
+  --violet:     #a78bfa;
+  --violet-dim: #8b6cf0;
   --red-lo:     #ff6b6b;
+  --pink:       #f472b6;
+  --orange:     #fb923c;
 
-  --text:       #d4dff2;
-  --text-dim:   #8494b2;
-  --text-bright:#e8f0ff;
+  /* 文字色：本文は白寄り、補足は明るい青灰、footer等は控えめな青灰 */
+  --text-bright:#f7f9ff;
+  --text:       #e2e8f5;
+  --text-dim:   #9fb6db;
+  --text-faint: #7186ab;
 
-  /* 背景グリッド専用（本文より薄く） */
-  --grid-line:  rgba(30,40,64,0.4);
+  /* 背景グリッド専用（本文よりさらに薄く） */
+  --grid-line:  rgba(42,53,87,0.15);
 
   --mono: "SF Mono", "Fira Code", "Consolas", "Courier New", monospace;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
@@ -71,7 +81,7 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), var(--blue-hi), transparent);
+  background: linear-gradient(90deg, transparent, var(--red-lo), var(--amber), var(--accent), var(--blue-hi), var(--violet), transparent);
 }
 
 .header-inner {
@@ -92,7 +102,7 @@ body {
   font-family: var(--mono);
   font-size: 12px;
   color: var(--accent);
-  background: rgba(0,255,157,0.06);
+  background: rgba(34,230,160,0.08);
   flex-shrink: 0;
   letter-spacing: 0;
 }
@@ -172,15 +182,15 @@ body {
 
 .intro-text--dim {
   font-size: 12px;
-  color: #5c6e8c;
+  color: var(--text-faint);
 }
 
 .layer-inline {
   font-family: var(--mono);
   font-size: 12px;
-  color: var(--accent);
-  background: rgba(0,255,157,0.07);
-  border: 1px solid rgba(0,255,157,0.15);
+  color: var(--blue-hi);
+  background: rgba(79,195,247,0.08);
+  border: 1px solid rgba(79,195,247,0.18);
   border-radius: 3px;
   padding: 1px 5px;
   white-space: nowrap;
@@ -196,10 +206,24 @@ body {
   display: block;
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--accent);
+  color: var(--text-bright);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 10px;
+}
+
+/* 単体観測＝アプリの主機能。重要見出しとして緑を残す */
+.input-section .input-label {
+  color: var(--accent);
+}
+
+/* 比較モード＝紫、現象素から世界を見る＝水色で見出しを役割分けする */
+.compare-section .input-label {
+  color: var(--violet);
+}
+
+.primitive-section .input-label {
+  color: var(--blue-hi);
 }
 
 .input-row {
@@ -229,7 +253,7 @@ body {
 
 .word-input:focus {
   border-color: var(--accent-dim);
-  box-shadow: 0 0 0 2px rgba(0,255,157,0.1);
+  box-shadow: 0 0 0 2px rgba(34,230,160,0.12);
 }
 
 .observe-btn {
@@ -237,7 +261,7 @@ body {
   align-items: center;
   gap: 6px;
   padding: 10px 16px;
-  background: rgba(0,255,157,0.1);
+  background: rgba(34,230,160,0.1);
   border: 1px solid var(--accent-dim);
   border-radius: var(--radius-sm);
   color: var(--accent);
@@ -251,12 +275,12 @@ body {
 }
 
 .observe-btn:hover {
-  background: rgba(0,255,157,0.18);
-  box-shadow: 0 0 12px rgba(0,255,157,0.15);
+  background: rgba(34,230,160,0.18);
+  box-shadow: 0 0 12px rgba(34,230,160,0.15);
 }
 
 .observe-btn:active {
-  background: rgba(0,255,157,0.25);
+  background: rgba(34,230,160,0.25);
 }
 
 .btn-icon {
@@ -279,7 +303,7 @@ body {
 
 .chip {
   background: var(--bg-hover);
-  border: 1px solid #2a3654;
+  border: 1px solid var(--border);
   border-radius: 20px;
   color: var(--text);
   font-family: var(--sans);
@@ -293,7 +317,7 @@ body {
 .chip:hover {
   border-color: var(--accent-dim);
   color: var(--accent);
-  background: rgba(0,255,157,0.06);
+  background: rgba(34,230,160,0.08);
 }
 
 /* ─── 結果エリア ─────────────────────────────────── */
@@ -444,11 +468,11 @@ body {
   margin-bottom: 4px;
 }
 
-.layer-card--I .layer-key { color: #f472b6; }
-.layer-card--M .layer-key { color: #a78bfa; }
+.layer-card--I .layer-key { color: var(--pink); }
+.layer-card--M .layer-key { color: var(--violet); }
 .layer-card--S .layer-key { color: var(--blue-hi); }
 .layer-card--F .layer-key { color: var(--amber); }
-.layer-card--E .layer-key { color: #fb923c; }
+.layer-card--E .layer-key { color: var(--orange); }
 .layer-card--T .layer-key { color: var(--accent); }
 
 .layer-key-label {
@@ -487,7 +511,7 @@ body {
 .delta-val {
   font-family: var(--mono);
   font-size: 13px;
-  color: #f472b6;
+  color: var(--pink);
 }
 
 /* スケール変換 */
@@ -527,12 +551,12 @@ body {
   content: '→';
   position: absolute;
   left: 0;
-  color: var(--accent-dim);
+  color: var(--text-dim);
   font-family: var(--mono);
   font-size: 11px;
 }
 
-/* 仮説チェック */
+/* 仮説チェック（辞書内蔵の構造的判定。v0.5のアドホック仮説とは別概念のため紫で区別） */
 .hyp-block {
   background: var(--bg-panel);
   border: 1px solid var(--border);
@@ -554,8 +578,8 @@ body {
   color: var(--text);
   line-height: 1.8;
   padding: 8px 12px;
-  background: rgba(0,255,157,0.04);
-  border: 1px solid rgba(0,255,157,0.1);
+  background: rgba(167,139,250,0.06);
+  border: 1px solid rgba(167,139,250,0.16);
   border-radius: var(--radius-sm);
 }
 
@@ -582,8 +606,8 @@ body {
 }
 
 .copy-btn:hover {
-  border-color: var(--accent-dim);
-  color: var(--accent);
+  border-color: var(--blue-dim);
+  color: var(--blue-hi);
 }
 
 .copy-btn.copied {
@@ -599,7 +623,7 @@ body {
   color: var(--text-dim);
   text-align: center;
   letter-spacing: 0.04em;
-  opacity: 0.7;
+  opacity: 0.85;
 }
 
 /* 未登録メッセージ */
@@ -615,19 +639,19 @@ body {
 .not-found-icon {
   font-size: 28px;
   margin-bottom: 12px;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .not-found-title {
   font-family: var(--mono);
   font-size: 14px;
-  color: var(--text-dim);
+  color: var(--text);
   margin-bottom: 8px;
 }
 
 .not-found-sub {
   font-size: 12px;
-  color: #4a5c78;
+  color: var(--text-dim);
 }
 
 /* ─── フッター ─────────────────────────────────── */
@@ -640,7 +664,7 @@ body {
 
 .footer-note {
   font-size: 11px;
-  color: #55658a;
+  color: var(--text-dim);
   line-height: 1.75;
   margin-bottom: 6px;
 }
@@ -648,7 +672,7 @@ body {
 .footer-sig {
   font-family: var(--mono);
   font-size: 10px;
-  color: #3c4a66;
+  color: var(--text-faint);
   letter-spacing: 0.06em;
 }
 
@@ -722,8 +746,8 @@ body {
 }
 
 .compare-select:focus {
-  border-color: var(--accent-dim);
-  box-shadow: 0 0 0 2px rgba(29,255,171,0.1);
+  border-color: var(--violet-dim);
+  box-shadow: 0 0 0 2px rgba(167,139,250,0.14);
 }
 
 .compare-vs {
@@ -743,9 +767,22 @@ body {
   color: var(--text-dim);
 }
 
+/* 比較モード＝紫で統一。observe-btnのレイアウトを継承しつつ色だけ上書き */
 .compare-btn {
   width: 100%;
   justify-content: center;
+  background: rgba(167,139,250,0.1);
+  border-color: var(--violet-dim);
+  color: var(--violet);
+}
+
+.compare-btn:hover {
+  background: rgba(167,139,250,0.18);
+  box-shadow: 0 0 12px rgba(167,139,250,0.15);
+}
+
+.compare-btn:active {
+  background: rgba(167,139,250,0.25);
 }
 
 .compare-result-section {
@@ -763,7 +800,7 @@ body {
 .compare-result-label {
   font-family: var(--mono);
   font-size: 10px;
-  color: var(--accent);
+  color: var(--violet);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -812,9 +849,9 @@ body {
 }
 
 .prim-tag--common {
-  color: var(--accent);
-  background: rgba(29,255,171,0.08);
-  border-color: rgba(29,255,171,0.22);
+  color: var(--violet);
+  background: rgba(167,139,250,0.1);
+  border-color: rgba(167,139,250,0.28);
 }
 
 .prim-tag--a {
@@ -926,7 +963,7 @@ body {
 
 .primitive-chip {
   background: var(--bg-hover);
-  border: 1px solid #2a3654;
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
   font-family: var(--mono);
@@ -938,16 +975,16 @@ body {
 }
 
 .primitive-chip:hover {
-  border-color: var(--accent-dim);
-  color: var(--accent);
-  background: rgba(0,255,157,0.06);
+  border-color: var(--blue-dim);
+  color: var(--blue-hi);
+  background: rgba(79,195,247,0.08);
 }
 
 .primitive-chip-active {
-  background: rgba(0,255,157,0.1);
-  border-color: var(--accent-dim);
-  color: var(--accent);
-  box-shadow: 0 0 10px rgba(0,255,157,0.12);
+  background: rgba(79,195,247,0.12);
+  border-color: var(--blue-dim);
+  color: var(--blue-hi);
+  box-shadow: 0 0 10px rgba(79,195,247,0.15);
 }
 
 .primitive-result-panel {
@@ -979,7 +1016,7 @@ body {
 
 .primitive-hit-count {
   font-size: 11px;
-  color: var(--accent);
+  color: var(--blue-hi);
 }
 
 .primitive-result-card {
@@ -1022,7 +1059,7 @@ body {
   align-items: center;
   gap: 6px;
   padding: 7px 14px;
-  background: rgba(0,255,157,0.1);
+  background: rgba(34,230,160,0.1);
   border: 1px solid var(--accent-dim);
   border-radius: var(--radius-sm);
   color: var(--accent);
@@ -1035,12 +1072,12 @@ body {
 }
 
 .primitive-observe-btn:hover {
-  background: rgba(0,255,157,0.18);
-  box-shadow: 0 0 12px rgba(0,255,157,0.15);
+  background: rgba(34,230,160,0.18);
+  box-shadow: 0 0 12px rgba(34,230,160,0.15);
 }
 
 .primitive-observe-btn:active {
-  background: rgba(0,255,157,0.25);
+  background: rgba(34,230,160,0.25);
 }
 
 /* ─── 未登録語の仮説観測（v0.5） ───────────────────── */
@@ -1161,7 +1198,7 @@ body {
 
 .hypothesis-chip {
   background: var(--bg-hover);
-  border: 1px solid #2a3654;
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
   font-family: var(--mono);
