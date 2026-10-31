@@ -538,11 +538,42 @@ function fallbackCopy(text, btn) {
   document.body.appendChild(ta);
   ta.focus();
   ta.select();
+  let copied = false;
   try {
-    document.execCommand('copy');
-    showCopied(btn);
-  } catch (_) {}
+    copied = typeof document.execCommand === 'function' && document.execCommand('copy') === true;
+  } catch (_) { copied = false; }
   document.body.removeChild(ta);
+  if (copied) showCopied(btn);
+  else showManualCopy(text);
+}
+
+function showManualCopy(text) {
+  let panel = document.getElementById('manualCopyPanel');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'manualCopyPanel';
+    panel.setAttribute('role', 'group');
+    panel.setAttribute('aria-label', '手動コピー');
+    panel.style.cssText = 'position:relative;z-index:2;max-width:760px;margin:16px auto;padding:16px;border:2px solid #3c6c94;border-radius:12px;background:#f4f8fd;color:#1d2a35;';
+    const label = document.createElement('label');
+    label.setAttribute('for', 'manualCopyText');
+    label.textContent = '自動コピーできませんでした。下の文章を選択してコピーしてください。';
+    label.style.cssText = 'display:block;margin-bottom:8px;font-weight:700;';
+    const field = document.createElement('textarea');
+    field.id = 'manualCopyText';
+    field.readOnly = true;
+    field.style.cssText = 'display:block;width:100%;min-height:120px;padding:10px;box-sizing:border-box;font:14px/1.5 system-ui;color:#1d2a35;background:#fff;border:1px solid #6987a0;border-radius:7px;';
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.textContent = '閉じる';
+    close.style.cssText = 'margin-top:8px;min-height:44px;padding:8px 15px;border-radius:8px;border:1px solid #59768c;background:#fff;color:#16334a;';
+    close.addEventListener('click', () => { panel.remove(); });
+    panel.appendChild(label);panel.appendChild(field);panel.appendChild(close);
+    document.body.appendChild(panel);
+  }
+  const field = panel.querySelector('#manualCopyText');
+  field.value = text;
+  field.focus();field.select();
 }
 
 function showCopied(btn) {
